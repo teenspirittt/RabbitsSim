@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Habitat extends Application {
-     public Group root = new Group();
+    public Group root = new Group();
     // public Scene scene = new Scene(root, 600, 600, Color.DARKGREEN);
     // public Stage stage;
     private int x, y;
@@ -68,22 +68,23 @@ public class Habitat extends Application {
 
 
     public void update(int time) {
-
+        int changesCounter = 0;
         alChance = (int) (alCount / 0.2);
         if (time % crTime == 0 && crChance >= random.nextInt(100)) {
             crCount++;
+            changesCounter++;
             System.out.println("Common");
             rabbits.add(new CommonRabbit());
         }
-        if (time % alTime == 0 && alChance <= rabbits.size()) { // FIXme chance for albino
+        if (time % alTime == 0 && alChance <= rabbits.size() && alChance >= random.nextInt(100)) {
             alCount++;
+            changesCounter++;
             System.out.println("Albino");
             rabbits.add(new AlbinoRabbit());
         }
-        if (rabbits.size() > time) {
-            rabbits.get(time).spawn(random.nextInt(300), random.nextInt(300));
-            root.getChildren().add(rabbits.get(time));
+        for (int i = rabbits.size() - changesCounter; i < rabbits.size(); ++i) {
+            rabbits.get(i).spawn(random.nextInt(300), random.nextInt(300));
+            root.getChildren().add(rabbits.get(i));
         }
-
     }
 }
