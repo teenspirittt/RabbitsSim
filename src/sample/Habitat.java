@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Habitat extends Application {
-    // public Group root;
+     public Group root = new Group();
     // public Scene scene = new Scene(root, 600, 600, Color.DARKGREEN);
     // public Stage stage;
     private int x, y;
@@ -32,16 +32,14 @@ public class Habitat extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
-        // initScene();
-
-
+        initScene();
         new Timer().schedule(
                 new TimerTask() {
                     int tTick = 0;
 
                     @Override
                     public void run() {
-                        update(tTick, root);
+                        update(tTick);
                         tTick++;
                     }
                 }, 0, 1000);
@@ -69,19 +67,23 @@ public class Habitat extends Application {
     }
 
 
-    public void update(int time, Group root) {
+    public void update(int time) {
+
         alChance = (int) (alCount / 0.2);
         if (time % crTime == 0 && crChance >= random.nextInt(100)) {
             crCount++;
+            System.out.println("Common");
             rabbits.add(new CommonRabbit());
         }
-        if (time % alTime == 0 && alChance <= rabbits.size()) {
+        if (time % alTime == 0 && alChance <= rabbits.size()) { // FIXme chance for albino
             alCount++;
+            System.out.println("Albino");
             rabbits.add(new AlbinoRabbit());
         }
         if (rabbits.size() > time) {
             rabbits.get(time).spawn(random.nextInt(300), random.nextInt(300));
             root.getChildren().add(rabbits.get(time));
         }
+
     }
 }
