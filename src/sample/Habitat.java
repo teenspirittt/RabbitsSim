@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Habitat extends Application {
-   // public Group root;
+    // public Group root;
     // public Scene scene = new Scene(root, 600, 600, Color.DARKGREEN);
     // public Stage stage;
     private int x, y;
@@ -32,16 +32,8 @@ public class Habitat extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
-       // initScene();
+        // initScene();
 
-        Group root = new Group();
-        Scene scene = new Scene(root, 600, 600, Color.DARKGREEN);
-        Stage stage = new Stage();
-
-        Image icon = new Image("resources/rabbitIcon.jpg");
-        stage.getIcons().add(icon);
-        stage.setTitle("Rabbits");
-        stage.setResizable(true);
 
         new Timer().schedule(
                 new TimerTask() {
@@ -53,13 +45,17 @@ public class Habitat extends Application {
                         tTick++;
                     }
                 }, 0, 1000);
-        stage.setScene(scene);
-        stage.show();
+
     }
 
     private void initScene() {
-
-
+        Group root = new Group();
+        Scene scene = new Scene(root, 600, 600, Color.DARKGREEN);
+        Stage stage = new Stage();
+        Image icon = new Image("resources/rabbitIcon.jpg");
+        stage.getIcons().add(icon);
+        stage.setTitle("Rabbits");
+        stage.setResizable(true);
 
          /*AlbinoRabbit albinoRabbit = new AlbinoRabbit();
          CommonRabbit commonRabbit = new CommonRabbit();
@@ -68,7 +64,8 @@ public class Habitat extends Application {
 
          root.getChildren().add(commonRabbit);
         root.getChildren().add(albinoRabbit);*/
-
+        stage.setScene(scene);
+        stage.show();
     }
 
 
