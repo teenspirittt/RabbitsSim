@@ -1,14 +1,15 @@
 package sample;
 
-
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 
 public class CommonRabbit extends Rabbit {
-    private ImageView imageView = new ImageView("resources/commonRabbit.png");
+
+    private ImageView imageView = new ImageView();
 
     public CommonRabbit() {
         super();
+        imageView = new ImageView("resources/commonRabbit.png");
     }
 
 
@@ -18,6 +19,7 @@ public class CommonRabbit extends Rabbit {
         this.imageView.setX(x);
         root.getChildren().add(this.imageView);
     }
+
 
     @Override
     public void move() {

@@ -3,7 +3,6 @@ package sample;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 
-
 public abstract class Rabbit extends Group implements IBehaviour {
 
     private static ImageView imageView = new ImageView();
@@ -14,6 +13,5 @@ public abstract class Rabbit extends Group implements IBehaviour {
 
 
     public abstract void spawn(int x, int y, Group root);
-
 
 }

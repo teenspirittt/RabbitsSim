@@ -3,9 +3,11 @@ package sample;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -21,36 +23,41 @@ import java.util.TimerTask;
 
 
 public class Habitat extends Application {
-    private final Group root = new Group();
     private final int sceneWidth = 1280;
     private final int sceneHeight = 720;
-    Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.DARKGREEN);
     private int crCount = 0, alCount = 0;
-    final Random random = new Random();
-    private final ArrayList<Rabbit> rabbits = new ArrayList();
     private int tTick = 0;
-    Timer timer = new Timer();
-    Text rabbitCount = new Text();
+
+    private final Group root = new Group();
+    Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.DARKGREEN);
+
+    private final ArrayList<Rabbit> rabbits = new ArrayList();
+    private final Text rabbitCount = new Text();
+    private final Random random = new Random();
+    private Timer timer = new Timer();
+
     private boolean isTimerWorking = false;
     private boolean isStatsVisible = false;
+
 
     public static void main(String[] args) throws Exception {
         Habitat.launch(args);
 
     }
 
+
     public void start(Stage primaryStage) throws Exception {
         try {
-
             initScene();
             scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
                 @Override
                 public void handle(KeyEvent keyEvent) {
-                    int a = 2;
                     switch (keyEvent.getCode()) {
                         case B:
-                            if (isTimerWorking == false)
+                            if (isTimerWorking == false) {
+                                isTimerWorking = true;
                                 timer = startTimer();
+                            }
                             break;
                         case E:
                             timer.cancel();
@@ -63,26 +70,28 @@ public class Habitat extends Application {
                             else
                                 isStatsVisible = false;
                             break;
-
                     }
                 }
             });
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     private void initScene() {
         Stage stage = new Stage();
         Image icon = new Image("resources/rabbitIcon.jpg");
 
         Rectangle r = new Rectangle(1050, 0, 1280, 720);
-        r.setOpacity(0.2);
+        r.setOpacity(0.1);
+
 
         root.getChildren().add(r);
         root.getChildren().add(rabbitCount);
+
+        buttonStartInit();
+        buttonStopInit();
+
 
         stage.getIcons().add(icon);
         stage.setTitle("Rabbits");
@@ -91,10 +100,8 @@ public class Habitat extends Application {
     }
 
     private Timer startTimer() {
-        /*if (timer != null)
-            timer.cancel();*/
         timer = new Timer();
-        isTimerWorking = true;
+
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -115,9 +122,9 @@ public class Habitat extends Application {
     public void update(int time) {
         int changesCounter = 0;
         int crChance = 70;
-        int alChance = (int) (alCount / 0.2);
+        int alSummaryChance = (int) (alCount / 0.2);
         int crTime = 2;
-        int alChance1 = 20;
+        int alChance = 20;
         int alTime = 2;
 
         if (time % crTime == 0 && crChance >= random.nextInt(100)) {
@@ -126,7 +133,7 @@ public class Habitat extends Application {
             rabbits.add(new CommonRabbit());
         }
 
-        if (time % alTime == 0 && alChance <= rabbits.size() && alChance1 >= random.nextInt(100)) {
+        if (time % alTime == 0 && alSummaryChance <= rabbits.size() && alChance >= random.nextInt(100)) {
             alCount++;
             changesCounter++;
             rabbits.add(new AlbinoRabbit());
@@ -138,21 +145,66 @@ public class Habitat extends Application {
         }
     }
 
+    private void resetStats() {
+        crCount = 0;
+        alCount = 0;
+        tTick = 0;
+        rabbits.clear();
+    }
 
     public void showStats() {
         rabbitCount.setVisible(isStatsVisible);
-        rabbitCount.setText("Big Chungus World:\n"
-                + tTick + " seconds\n" +
-                "classic rabbits born: " + crCount +
-                "\nalbino rabbits born: " + alCount);
-
-        rabbitCount.setFont(Font.font("Montserat", 22));
-       /* if (isStatsVisible == true)
-            rabbitCount.setFill(Color.BLACK);
-        else
-            rabbitCount.setFill(Color.DARKGREEN);*/
+        rabbitCount.setText("Big Chungus World:\n["
+                + tTick + "] seconds\n" +
+                "Classic rabbits born: " + crCount +
+                "\nAlbino rabbits born: " + alCount);
+        rabbitCount.setFont(Font.font("Montserrat", 22));
         rabbitCount.setX(1060);
         rabbitCount.setY(50);
+    }
 
+    private void buttonStartInit() {
+        Button start = new Button("Start");
+        start.setLayoutX(1118);
+        start.setLayoutY(150);
+        buttonStartLogic(start);
+        start.setDisable(false);
+        root.getChildren().add(start);
+    }
+
+    private void buttonStartLogic(Button start) {
+        start.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (isTimerWorking == false) {
+                    start.setDisable(true);
+                    startTimer();
+                }
+            }
+        });
+    }
+
+    private void buttonStopInit() {
+        Button stop = new Button("Stop");
+        stop.setLayoutX(1174);
+        stop.setLayoutY(150);
+        buttonStopLogic(stop);
+        stop.setDisable(true);
+        root.getChildren().add(stop);
+    }
+
+    private void buttonStopLogic(Button stop) {
+        stop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                for (int i = 0; i < alCount + crCount; ++i) {
+                    // root.getChildren().removeAll();
+
+                }
+                stop.setDisable(false);
+                timer.cancel();
+                resetStats();
+            }
+        });
     }
 }
