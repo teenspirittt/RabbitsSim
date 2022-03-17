@@ -31,6 +31,9 @@ public class Habitat extends Application {
     private final Group root = new Group();
     Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.DARKGREEN);
 
+    Button stop = new Button("Stop");
+    Button start = new Button("Start");
+
     private final ArrayList<Rabbit> rabbits = new ArrayList();
     private final Text rabbitCount = new Text();
     private final Random random = new Random();
@@ -101,6 +104,7 @@ public class Habitat extends Application {
 
     private Timer startTimer() {
         timer = new Timer();
+        System.out.println("tupoe govno");
 
         timer.schedule(new TimerTask() {
             @Override
@@ -150,6 +154,7 @@ public class Habitat extends Application {
         alCount = 0;
         tTick = 0;
         rabbits.clear();
+
     }
 
     public void showStats() {
@@ -163,8 +168,12 @@ public class Habitat extends Application {
         rabbitCount.setY(50);
     }
 
+    private void updateStats(){
+
+    }
+
     private void buttonStartInit() {
-        Button start = new Button("Start");
+
         start.setLayoutX(1118);
         start.setLayoutY(150);
         buttonStartLogic(start);
@@ -173,19 +182,16 @@ public class Habitat extends Application {
     }
 
     private void buttonStartLogic(Button start) {
-        start.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                if (isTimerWorking == false) {
-                    start.setDisable(true);
-                    startTimer();
-                }
+        start.setOnAction(ActionEvent -> {
+            if (isTimerWorking == false) {
+                start.setDisable(true);
+                stop.setDisable(false);
+                startTimer();
             }
         });
     }
 
     private void buttonStopInit() {
-        Button stop = new Button("Stop");
         stop.setLayoutX(1174);
         stop.setLayoutY(150);
         buttonStopLogic(stop);
@@ -198,12 +204,16 @@ public class Habitat extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
                 for (int i = 0; i < alCount + crCount; ++i) {
-                    // root.getChildren().removeAll();
-
+                    for (Rabbit rabbit : rabbits) {
+                        rabbit.delete(root);
+                    }
                 }
-                stop.setDisable(false);
-                timer.cancel();
+                rabbits.clear();
                 resetStats();
+                showStats();
+                stop.setDisable(true);
+                start.setDisable(false);
+                timer.cancel();
             }
         });
     }

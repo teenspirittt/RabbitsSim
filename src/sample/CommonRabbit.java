@@ -5,19 +5,23 @@ import javafx.scene.image.ImageView;
 
 public class CommonRabbit extends Rabbit {
 
-    private ImageView imageView = new ImageView();
+    private final ImageView imageView = new ImageView("resources/commonRabbit.png");
 
     public CommonRabbit() {
         super();
-        imageView = new ImageView("resources/commonRabbit.png");
     }
 
 
     @Override
     public void spawn(int x, int y, Group root) {
-        this.imageView.setY(y);
-        this.imageView.setX(x);
-        root.getChildren().add(this.imageView);
+        imageView.setY(y);
+        imageView.setX(x);
+        root.getChildren().add(imageView);
+    }
+
+    @Override
+    public void delete(Group root) {
+        root.getChildren().remove(imageView);
     }
 
 

@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 
 public class AlbinoRabbit extends Rabbit {
 
-    private ImageView imageView = new ImageView("resources/albino.png");
+    private final ImageView imageView = new ImageView("resources/albino.png");
 
     public AlbinoRabbit() {
         super();
@@ -14,9 +14,14 @@ public class AlbinoRabbit extends Rabbit {
 
     @Override
     public void spawn(int x, int y, Group root) {
-        this.imageView.setY(y);
-        this.imageView.setX(x);
-        root.getChildren().add(this.imageView);
+        imageView.setY(y);
+        imageView.setX(x);
+        root.getChildren().add(imageView);
+    }
+
+    @Override
+    public void delete(Group root) {
+        root.getChildren().remove(imageView);
     }
 
 

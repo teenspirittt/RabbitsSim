@@ -13,5 +13,6 @@ public abstract class Rabbit extends Group implements IBehaviour {
 
 
     public abstract void spawn(int x, int y, Group root);
+    public abstract void delete(Group root);
 
 }
