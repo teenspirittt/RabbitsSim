@@ -17,9 +17,9 @@ public class Habitat {
 
     private final int sceneWidth = 1280;
     private final int sceneHeight = 720;
-    Button stopButton = new Button("Stop");
-    Button startButton = new Button("Start");
-    Button pauseButton = new Button("Pause");
+    private Button stopButton = new Button("Stop");
+    private Button startButton = new Button("Start");
+    private Button pauseButton = new Button("Pause");
     private final Group root = new Group();
     private final Stage stage = new Stage();
     Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.DARKGREEN);

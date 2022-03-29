@@ -161,7 +161,7 @@ public class Controller {
             view.getStopButton().setDisable(true);
             view.getStartButton().setDisable(false);
             model.setTimerWorking(false);
-            view.pauseButton.setVisible(false);
+            view.getPauseButton().setVisible(false);
             view.getStartButton().setVisible(true);
         });
     }
