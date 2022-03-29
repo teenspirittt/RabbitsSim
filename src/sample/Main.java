@@ -1,11 +1,6 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 
@@ -67,16 +62,27 @@ import javafx.stage.Stage;
 // * [DONE]
 
 
-public class Main /*extends Application */{
+public class Main extends Application {
 
-
- /*   @Override
-    public void start(Stage stage) throws Exception {
+    public static void main(String[] args) throws Exception {
+        launch(args);
 
     }
 
-    public static void main(String[] args) throws Exception {
-        Habitat.launch(args);
-    }*/
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        try {
+            Habitat view = Habitat.getInstance();
+            view.initScene();
+            Controller controller = Controller.getInstance();
+            controller.initController(view);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 }
