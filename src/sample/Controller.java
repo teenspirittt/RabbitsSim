@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Platform;
+import javafx.scene.text.Text;
 
 import java.util.Random;
 import java.util.Timer;
@@ -68,6 +69,7 @@ public class Controller {
                     @Override
                     public void run() {
                         update(model.gettTick());
+                        updateStats();
                         model.settTick(model.gettTick() + 1);
                     }
                 });
@@ -95,10 +97,12 @@ public class Controller {
     }
 
     private void keyShowStatsLogic() {
+
         model.setStatsVisible(!model.isStatsVisible());
+        view.getRabbitCount().setVisible(model.isStatsVisible());
     }
 
-    public void keyBinds() { // rename
+    public void keyBinds() {
         view.getScene().setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case B:
@@ -139,12 +143,14 @@ public class Controller {
             model.setTimerWorking(false);
             model.getRabbitsList().clear();
             model.resetStats();
-            view.initStats();
+            updateStats();
 
             view.getStopButton().setDisable(true);
             view.getStartButton().setDisable(false);
-            view.getStopButton().setVisible(true);
-            view.getStartButton().setVisible(false);
+
+            view.getStartButton().setVisible(true);
+            view.getPauseButton().setVisible(false);
+
             timer.cancel();
         });
     }
@@ -158,5 +164,12 @@ public class Controller {
             view.pauseButton.setVisible(false);
             view.getStartButton().setVisible(true);
         });
+    }
+
+    private void updateStats(){
+        view.getRabbitCount().setText("Big Chungus World:\n["
+                + model.gettTick() + "] seconds\n" +
+                "Classic rabbits born: " + model.getCrCount() +
+                "\nAlbino rabbits born: " + model.getAlCount());
     }
 }

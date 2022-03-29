@@ -79,7 +79,6 @@ public class Habitat {
     }
 
     public void initStats() {
-        rabbitCount.setVisible(false);
         rabbitCount.setFont(Font.font("Montserrat", 22));
         rabbitCount.setX(1060);
         rabbitCount.setY(50);
@@ -90,13 +89,14 @@ public class Habitat {
         Image icon = new Image("resources/rabbitIcon.jpg");
         Rectangle recForInfo = new Rectangle(1050, 0, 1280, 720);
         recForInfo.setOpacity(0.1);
-        root.getChildren().addAll(recForInfo, rabbitCount);
+        root.getChildren().add(recForInfo);
         stage.getIcons().add(icon);
         stage.setTitle("Rabbits");
         stage.setScene(scene);
         buttonPauseInit();
         buttonStartInit();
         buttonStopInit();
+        initStats();
         stage.setOnCloseRequest(windowEvent -> {
             Platform.exit();
             System.exit(0);

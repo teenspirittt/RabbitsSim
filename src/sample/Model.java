@@ -35,6 +35,7 @@ public class Model {
         rabbitsList.clear();
     }
 
+
     public int getAlChance() {
         return alChance;
     }
