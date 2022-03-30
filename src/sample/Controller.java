@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 
+import java.awt.event.ActionEvent;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +35,10 @@ public class Controller {
         buttonPauseLogic();
         buttonStartLogic();
         buttonStopLogic();
+        radButtonShowStatsLogic();
+        radButtonHideStatsLogic();
+        comBoxCommonLogic();
+        comBoxAlbinoLogic();
     }
 
     public void update(int time) {
@@ -53,7 +58,7 @@ public class Controller {
         }
 
         for (int i = model.getRabbitsList().size() - changesCounter; i < model.getRabbitsList().size(); ++i) {
-            model.getRabbitsList().get(i).spawn(random.nextInt(view.getSceneWidth() - 300), random.nextInt(view.getSceneHeight() - 70), view.getRoot());
+            model.getRabbitsList().get(i).spawn(random.nextInt(view.getSceneWidth() - 320), random.nextInt(view.getSceneHeight() - 70), view.getRoot());
             view.getRoot().getChildren().add(model.getRabbitsList().get(i));
         }
     }
@@ -133,7 +138,6 @@ public class Controller {
 
     private void buttonStopLogic() {
         view.getStopButton().setOnAction(ActionEvent -> {
-
             for (Rabbit rabbit : model.getRabbitsList()) {
                 rabbit.delete(view.getRoot());
             }
@@ -161,10 +165,37 @@ public class Controller {
         });
     }
 
-    private void updateStats(){
-       view.getRabbitCount().setFill(Color.web("669933"));
+    private void updateStats() {
+        view.getRabbitCount().setFill(Color.web("669933"));
         view.getRabbitCount().setText("Time: " + model.gettTick() +
                 "\nClassic Rabbits: " + model.getCrCount() +
                 "\nAlbino Rabbits: " + model.getAlCount());
     }
+
+    private void radButtonHideStatsLogic() {
+        view.getHideStats().setOnAction(ActionEvent -> {
+            model.setStatsVisible(false);
+            view.getRabbitCount().setVisible(model.isStatsVisible());
+        });
+    }
+
+    private void radButtonShowStatsLogic() {
+        view.getShowStats().setOnAction(ActionEvent -> {
+            model.setStatsVisible(true);
+            view.getRabbitCount().setVisible(model.isStatsVisible());
+        });
+    }
+
+    private void comBoxAlbinoLogic() {
+        view.getAlChanceBox().setOnAction(ActionEvent -> {
+            model.setAlChance(view.getAlChanceBox().getValue());
+        });
+    }
+
+    private void comBoxCommonLogic() {
+        view.getCrChanceBox().setOnAction(ActionEvent -> {
+            model.setCrChance(view.getCrChanceBox().getValue());
+        });
+    }
+
 }

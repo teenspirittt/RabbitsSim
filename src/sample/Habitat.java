@@ -1,18 +1,13 @@
 package sample;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -28,12 +23,15 @@ public class Habitat {
     private Button startButton = new Button("START");
     private Button pauseButton = new Button("PAUSE");
     private ToggleGroup radioGroup = new ToggleGroup();
-    private RadioButton showStats = new RadioButton();
-    private RadioButton hideStats = new RadioButton();
+    private RadioButton showStats = new RadioButton("Show stats");
+    private RadioButton hideStats = new RadioButton("Hide stats");
+    private ComboBox<Integer> alChanceBox = new ComboBox<Integer>();
+    private ComboBox<Integer> crChanceBox = new ComboBox<Integer>();
     private final Group root = new Group();
     private final Stage stage = new Stage();
     Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878"));
     private Text rabbitCount = new Text();
+    private ObservableList<Integer> chanceList = FXCollections.observableArrayList(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0);
 
 
     static synchronized Habitat getInstance() {
@@ -55,6 +53,21 @@ public class Habitat {
         return pauseButton;
     }
 
+    public RadioButton getHideStats() {
+        return hideStats;
+    }
+
+    public ComboBox<Integer> getAlChanceBox() {
+        return alChanceBox;
+    }
+
+    public ComboBox<Integer> getCrChanceBox() {
+        return crChanceBox;
+    }
+
+    public RadioButton getShowStats() {
+        return showStats;
+    }
 
     public Group getRoot() {
         return root;
@@ -80,6 +93,10 @@ public class Habitat {
         return sceneWidth;
     }
 
+    public ObservableList<Integer> getChanceList() {
+        return chanceList;
+    }
+
     public void setRabbitCount(Text rabbitCount) {
         this.rabbitCount = rabbitCount;
     }
@@ -89,6 +106,7 @@ public class Habitat {
     }
 
     public void initStats() {
+        rabbitCount.setVisible(false);
         rabbitCount.setFont(Font.font("Cascadia Code", 17));
         rabbitCount.setX(1074);
         rabbitCount.setY(68);
@@ -102,7 +120,7 @@ public class Habitat {
         Rectangle recFace = new Rectangle(1039, 0, 241, 720);
         recFace.setFill(Color.web("0000004a"));
 
-        Rectangle recInfo = new Rectangle(1061,39,203, 132);
+        Rectangle recInfo = new Rectangle(1061, 39, 203, 132);
         recInfo.setFill(Color.web("00000086"));
 
         root.getChildren().addAll(recFace, recInfo);
@@ -113,6 +131,9 @@ public class Habitat {
         buttonPauseInit();
         buttonStartInit();
         buttonStopInit();
+        radioButtonsShowStatsInit();
+        alChanceListInit();
+        crChanceListInit();
         initStats();
         stage.setOnCloseRequest(windowEvent -> {
             Platform.exit();
@@ -122,8 +143,8 @@ public class Habitat {
     }
 
     private void buttonStartInit() {
-        startButton.setFont(Font.font("Cascadia Code",38));
-        startButton.setPrefSize(203,84);
+        startButton.setFont(Font.font("Cascadia Code", 38));
+        startButton.setPrefSize(203, 84);
         startButton.setLayoutX(1058);
         startButton.setLayoutY(591);
         startButton.setDisable(false);
@@ -131,8 +152,8 @@ public class Habitat {
     }
 
     private void buttonStopInit() {
-        stopButton.setFont(Font.font("Cascadia Code",15));
-        stopButton.setPrefSize(203,31);
+        stopButton.setFont(Font.font("Cascadia Code", 15));
+        stopButton.setPrefSize(203, 31);
         stopButton.setLayoutX(1058);
         stopButton.setLayoutY(675);
         stopButton.setDisable(true);
@@ -140,8 +161,8 @@ public class Habitat {
     }
 
     private void buttonPauseInit() {
-        pauseButton.setFont(Font.font("Cascadia Code",38));
-        pauseButton.setPrefSize(203,84);
+        pauseButton.setFont(Font.font("Cascadia Code", 38));
+        pauseButton.setPrefSize(203, 84);
         pauseButton.setLayoutX(1058);
         pauseButton.setLayoutY(591);
         pauseButton.setDisable(false);
@@ -150,8 +171,36 @@ public class Habitat {
     }
 
     private void radioButtonsShowStatsInit() {
+        hideStats.setFont(Font.font("Cascadia Code", 12));
         hideStats.setToggleGroup(radioGroup);
-        showStats.setToggleGroup(radioGroup);
+        hideStats.setLayoutX(1065);
+        hideStats.setLayoutY(171);
 
+        showStats.setFont(Font.font("Cascadia Code", 12));
+        showStats.setToggleGroup(radioGroup);
+        showStats.setLayoutX(1170);
+        showStats.setLayoutY(171);
+
+        root.getChildren().addAll(showStats, hideStats);
     }
+
+    private void alChanceListInit() {
+        alChanceBox.setValue(100);
+        alChanceBox.setItems(chanceList);
+        alChanceBox.setLayoutX(1059);
+        alChanceBox.setLayoutY(203);
+        alChanceBox.setVisibleRowCount(3);
+        root.getChildren().add(alChanceBox);
+    }
+
+    private void crChanceListInit() {
+        crChanceBox.setValue(100);
+        crChanceBox.setItems(chanceList);
+        crChanceBox.setLayoutX(1059);
+        crChanceBox.setLayoutY(252);
+        crChanceBox.setVisibleRowCount(3);
+        root.getChildren().add(crChanceBox);
+    }
+
+
 }
