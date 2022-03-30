@@ -3,9 +3,16 @@ package sample;
 import javafx.application.Platform;
 import javafx.scene.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -17,12 +24,15 @@ public class Habitat {
 
     private final int sceneWidth = 1280;
     private final int sceneHeight = 720;
-    private Button stopButton = new Button("Stop");
-    private Button startButton = new Button("Start");
-    private Button pauseButton = new Button("Pause");
+    private Button stopButton = new Button("STOP");
+    private Button startButton = new Button("START");
+    private Button pauseButton = new Button("PAUSE");
+    private ToggleGroup radioGroup = new ToggleGroup();
+    private RadioButton showStats = new RadioButton();
+    private RadioButton hideStats = new RadioButton();
     private final Group root = new Group();
     private final Stage stage = new Stage();
-    Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.DARKGREEN);
+    Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878"));
     private Text rabbitCount = new Text();
 
 
@@ -79,20 +89,27 @@ public class Habitat {
     }
 
     public void initStats() {
-        rabbitCount.setFont(Font.font("Montserrat", 22));
-        rabbitCount.setX(1060);
-        rabbitCount.setY(50);
+        rabbitCount.setFont(Font.font("Cascadia Code", 17));
+        rabbitCount.setX(1074);
+        rabbitCount.setY(68);
         root.getChildren().add(rabbitCount);
     }
 
     public void initScene() {
+
         Image icon = new Image("resources/rabbitIcon.jpg");
-        Rectangle recForInfo = new Rectangle(1050, 0, 1280, 720);
-        recForInfo.setOpacity(0.1);
-        root.getChildren().add(recForInfo);
+
+        Rectangle recFace = new Rectangle(1039, 0, 241, 720);
+        recFace.setFill(Color.web("0000004a"));
+
+        Rectangle recInfo = new Rectangle(1061,39,203, 132);
+        recInfo.setFill(Color.web("00000086"));
+
+        root.getChildren().addAll(recFace, recInfo);
         stage.getIcons().add(icon);
         stage.setTitle("Rabbits");
         stage.setScene(scene);
+        stage.setResizable(false);
         buttonPauseInit();
         buttonStartInit();
         buttonStopInit();
@@ -105,28 +122,36 @@ public class Habitat {
     }
 
     private void buttonStartInit() {
-        startButton.setLayoutX(1118);
-        startButton.setLayoutY(150);
-        //buttonStartLogic();
+        startButton.setFont(Font.font("Cascadia Code",38));
+        startButton.setPrefSize(203,84);
+        startButton.setLayoutX(1058);
+        startButton.setLayoutY(591);
         startButton.setDisable(false);
         root.getChildren().add(startButton);
     }
 
     private void buttonStopInit() {
-        stopButton.setLayoutX(1174);
-        stopButton.setLayoutY(150);
-        //buttonStopLogic();
+        stopButton.setFont(Font.font("Cascadia Code",15));
+        stopButton.setPrefSize(203,31);
+        stopButton.setLayoutX(1058);
+        stopButton.setLayoutY(675);
         stopButton.setDisable(true);
         root.getChildren().add(stopButton);
     }
 
     private void buttonPauseInit() {
-        pauseButton.setLayoutX(1118);
-        pauseButton.setLayoutY(150);
-        //buttonPauseLogic();
+        pauseButton.setFont(Font.font("Cascadia Code",38));
+        pauseButton.setPrefSize(203,84);
+        pauseButton.setLayoutX(1058);
+        pauseButton.setLayoutY(591);
         pauseButton.setDisable(false);
         pauseButton.setVisible(false);
         root.getChildren().add(pauseButton);
     }
 
+    private void radioButtonsShowStatsInit() {
+        hideStats.setToggleGroup(radioGroup);
+        showStats.setToggleGroup(radioGroup);
+
+    }
 }

@@ -1,7 +1,7 @@
 package sample;
 
 import javafx.application.Platform;
-import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
 
 import java.util.Random;
 import java.util.Timer;
@@ -38,9 +38,7 @@ public class Controller {
 
     public void update(int time) {
         int changesCounter = 0;
-
         int alSummaryChance = (int) (model.getAlCount() / 0.2);
-
 
         if (time % model.getCrTime() == 0 && model.getCrChance() >= random.nextInt(100)) {
             model.setCrCount(model.getCrCount() + 1);
@@ -55,7 +53,7 @@ public class Controller {
         }
 
         for (int i = model.getRabbitsList().size() - changesCounter; i < model.getRabbitsList().size(); ++i) {
-            model.getRabbitsList().get(i).spawn(random.nextInt(view.getSceneWidth() - 250), random.nextInt(view.getSceneHeight() - 70), view.getRoot());
+            model.getRabbitsList().get(i).spawn(random.nextInt(view.getSceneWidth() - 300), random.nextInt(view.getSceneHeight() - 70), view.getRoot());
             view.getRoot().getChildren().add(model.getRabbitsList().get(i));
         }
     }
@@ -97,7 +95,6 @@ public class Controller {
     }
 
     private void keyShowStatsLogic() {
-
         model.setStatsVisible(!model.isStatsVisible());
         view.getRabbitCount().setVisible(model.isStatsVisible());
     }
@@ -144,10 +141,8 @@ public class Controller {
             model.getRabbitsList().clear();
             model.resetStats();
             updateStats();
-
             view.getStopButton().setDisable(true);
             view.getStartButton().setDisable(false);
-
             view.getStartButton().setVisible(true);
             view.getPauseButton().setVisible(false);
 
@@ -167,9 +162,9 @@ public class Controller {
     }
 
     private void updateStats(){
-        view.getRabbitCount().setText("Big Chungus World:\n["
-                + model.gettTick() + "] seconds\n" +
-                "Classic rabbits born: " + model.getCrCount() +
-                "\nAlbino rabbits born: " + model.getAlCount());
+       view.getRabbitCount().setFill(Color.web("669933"));
+        view.getRabbitCount().setText("Time: " + model.gettTick() +
+                "\nClassic Rabbits: " + model.getCrCount() +
+                "\nAlbino Rabbits: " + model.getAlCount());
     }
 }
