@@ -3,13 +3,13 @@ package sample;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
 
-import java.security.Key;
+
+import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,6 +49,7 @@ public class Controller {
         textAreaCrDelayLogic();
         fileMenuLogic();
         runMenuLogic();
+        viewMenuLogic();
     }
 
     public void update(int time) {
@@ -68,7 +69,7 @@ public class Controller {
         }
 
         for (int i = model.getRabbitsList().size() - changesCounter; i < model.getRabbitsList().size(); ++i) {
-            model.getRabbitsList().get(i).spawn(random.nextInt(view.getSceneWidth() - 318), random.nextInt(view.getSceneHeight() - 98), view.getRoot());
+            model.getRabbitsList().get(i).spawn(random.nextInt(view.getSceneWidth() - 318), random.nextInt(view.getSceneHeight() - 120), view.getRoot());
             view.getRoot().getChildren().add(model.getRabbitsList().get(i));
         }
     }
@@ -91,23 +92,12 @@ public class Controller {
         return timer;
     }
 
-
-    private void keyShowStatsLogic() {
-        model.setStatsVisible(!model.isStatsVisible());
-        view.getRabbitCount().setVisible(model.isStatsVisible());
-        if (model.isStatsVisible() == true)
-            view.getShowStats().fire();
-        else
-            view.getHideStats().fire();
-
-    }
-
     public void keyBinds() {
         view.getScene().setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case B -> startLogic();
                 case E -> pauseLogic();
-                case T -> keyShowStatsLogic();
+                case T -> showStatsLogic();
                 case S -> stopLogic();
             }
         });
@@ -125,7 +115,6 @@ public class Controller {
             model.setTimerWorking(true);
             view.getPauseButton().setVisible(true);
             view.getStartButton().setVisible(false);
-
         }
     }
 
@@ -143,23 +132,47 @@ public class Controller {
     }
 
     private void stopLogic() {
-        for (Rabbit rabbit : model.getRabbitsList()) {
-            rabbit.delete(view.getRoot());
-        }
-        model.setTimerWorking(false);
-        model.getRabbitsList().clear();
-        model.resetStats();
-        updateStats();
-        view.getStopButton().setDisable(true);
-        view.getStartButton().setDisable(false);
-        view.getPauseButton().setDisable(true);
-        view.getStopMenuItem().setDisable(true);
-        view.getStartMenuItem().setDisable(false);
-        view.getPauseMenuItem().setDisable(true);
-        view.getStartButton().setVisible(true);
-        view.getPauseButton().setVisible(false);
         timer.cancel();
+        if (model.isStatsVisible() == false) {
+            view.getStopSimulation().setContentText("Time: " + model.gettTick() +
+                    "\nClassic Rabbits: " + model.getCrCount() +
+                    "\nAlbino Rabbits: " + model.getAlCount() +
+                    "\nClassic chance: " + model.getCrChance() +
+                    "\nClassic delay: " + model.getCrTime() +
+                    "\nAlbino chance: " + model.getAlChance() +
+                    "\nAlbino delay:" + model.getAlTime());
+            Optional<ButtonType> option = view.getStopSimulation().showAndWait();
+            if(option.get() == ButtonType.OK) {
+                for (Rabbit rabbit : model.getRabbitsList()) {
+                    rabbit.delete(view.getRoot());
+                }
+                model.setTimerWorking(false);
+                model.getRabbitsList().clear();
+                model.resetStats();
+                updateStats();
+                view.getStopButton().setDisable(true);
+                view.getStartButton().setDisable(false);
+                view.getPauseButton().setDisable(true);
+                view.getStopMenuItem().setDisable(true);
+                view.getStartMenuItem().setDisable(false);
+                view.getPauseMenuItem().setDisable(true);
+                view.getStartButton().setVisible(true);
+                view.getPauseButton().setVisible(false);
+            } else {
+                startTimer();
+            }
+        }
     }
+
+    private void showStatsLogic() {
+        model.setStatsVisible(!model.isStatsVisible());
+        view.getRabbitCount().setVisible(model.isStatsVisible());
+        if (model.isStatsVisible() == true)
+            view.getShowStats().fire();
+        else
+            view.getHideStats().fire();
+    }
+
 
     private void buttonStartLogic() {
         view.getStartButton().setOnAction(ActionEvent -> {
@@ -253,7 +266,6 @@ public class Controller {
     }
 
     private void fileMenuLogic() {
-        // view.getExitMenuItem().setAccelerator(KeyCombination.keyCombination("Ctrl + X"));
         view.getExitMenuItem().setOnAction(ActionEvent -> {
             System.exit(0);
         });
@@ -268,9 +280,16 @@ public class Controller {
         view.getPauseMenuItem().setOnAction(ActionEvent -> {
             pauseLogic();
         });
-
+        view.getStopMenuItem().setAccelerator(KeyCombination.keyCombination("S"));
         view.getStopMenuItem().setOnAction(ActionEvent -> {
             stopLogic();
+        });
+    }
+
+    private void viewMenuLogic() {
+        view.getHideShowMenuItem().setAccelerator(KeyCombination.keyCombination("T"));
+        view.getHideShowMenuItem().setOnAction(ActionEvent -> {
+            showStatsLogic();
         });
     }
 

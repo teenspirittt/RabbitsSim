@@ -26,6 +26,7 @@ public class Habitat {
     private final RadioButton showStats = new RadioButton("Show stats");
     private final RadioButton hideStats = new RadioButton("Hide stats");
     private final Alert incorrectInput = new Alert(Alert.AlertType.WARNING);
+    private final Alert stopSimulation = new Alert(Alert.AlertType.CONFIRMATION);
     private final TextField textFieldAlDelay = new TextField();
     private final TextField textFieldCrDelay = new TextField();
     private final ComboBox<Integer> alChanceBox = new ComboBox<Integer>();
@@ -37,10 +38,13 @@ public class Habitat {
     private final Menu runMenu = new Menu("Run");
     private final Menu editMenu = new Menu("Edit");
     private final Menu fileMenu = new Menu("File");
+    private final Menu viewMenu = new Menu("View");
     private final MenuItem startMenuItem = new MenuItem("Start");
     private final MenuItem stopMenuItem = new MenuItem("Stop");
     private final MenuItem pauseMenuItem = new MenuItem("Pause");
     private final MenuItem exitMenuItem = new MenuItem("Exit");
+    private final MenuItem hideShowMenuItem = new MenuItem("Hide/Show Statistic");
+
     private Text rabbitCount = new Text();
 
 
@@ -154,8 +158,16 @@ public class Habitat {
         return exitMenuItem;
     }
 
+    public MenuItem getHideShowMenuItem() {
+        return hideShowMenuItem;
+    }
+
     public Alert getIncorrectInput() {
         return incorrectInput;
+    }
+
+    public Alert getStopSimulation() {
+        return stopSimulation;
     }
 
     public ObservableList<Integer> getChanceList() {
@@ -326,16 +338,21 @@ public class Habitat {
         incorrectInput.setTitle("Warning Alert");
         incorrectInput.setHeaderText("Incorrect Input:");
         incorrectInput.setContentText("Enter only a numeric value!");
+
+        stopSimulation.setTitle("Stop Simulation");
+        stopSimulation.setHeaderText("Are you sure want stop simulation?\nIt will delete all rabbits.");
     }
 
     private void menuInit() {
-        menuBar.getMenus().addAll(fileMenu, editMenu, runMenu);
+        menuBar.getMenus().addAll(fileMenu, editMenu, viewMenu, runMenu);
         menuBar.setPrefWidth(1280);
         runMenu.getItems().add(startMenuItem);
         runMenu.getItems().add(pauseMenuItem);
         runMenu.getItems().add(stopMenuItem);
 
         fileMenu.getItems().add(exitMenuItem);
+
+        viewMenu.getItems().add(hideShowMenuItem);
 
         root.getChildren().add(menuBar);
     }
