@@ -19,19 +19,40 @@ public class Habitat {
 
     private final int sceneWidth = 1280;
     private final int sceneHeight = 720;
-    private Button stopButton = new Button("STOP");
-    private Button startButton = new Button("START");
-    private Button pauseButton = new Button("PAUSE");
-    private ToggleGroup radioGroup = new ToggleGroup();
-    private RadioButton showStats = new RadioButton("Show stats");
-    private RadioButton hideStats = new RadioButton("Hide stats");
-    private ComboBox<Integer> alChanceBox = new ComboBox<Integer>();
-    private ComboBox<Integer> crChanceBox = new ComboBox<Integer>();
+    private final Button stopButton = new Button("STOP");
+    private final Button startButton = new Button("START");
+    private final Button pauseButton = new Button("PAUSE");
+    private final ToggleGroup radioGroup = new ToggleGroup();
+    private final RadioButton showStats = new RadioButton("Show stats");
+    private final RadioButton hideStats = new RadioButton("Hide stats");
+    private final Alert incorrectInput = new Alert(Alert.AlertType.WARNING);
+    private final TextField textFieldAlDelay = new TextField();
+    private final TextField textFieldCrDelay = new TextField();
+    private final ComboBox<Integer> alChanceBox = new ComboBox<Integer>();
+    private final ComboBox<Integer> crChanceBox = new ComboBox<Integer>();
     private final Group root = new Group();
     private final Stage stage = new Stage();
-    Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878"));
+    private Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878"));
+    private final MenuBar menuBar = new MenuBar();
+    private final Menu runMenu = new Menu("Run");
+    private final Menu editMenu = new Menu("Edit");
+    private final Menu fileMenu = new Menu("File");
+    private final MenuItem startMenuItem = new MenuItem("Start");
+    private final MenuItem stopMenuItem = new MenuItem("Stop");
+    private final MenuItem pauseMenuItem = new MenuItem("Pause");
+    private final MenuItem exitMenuItem = new MenuItem("Exit");
     private Text rabbitCount = new Text();
-    private ObservableList<Integer> chanceList = FXCollections.observableArrayList(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0);
+
+
+    private final Text settingsCrRabbitText = new Text("COMMON RABBIT");
+    private final Text settingsCrSpawnChanceText = new Text("Spawn Chance");
+    private final Text settingsCrDelayText = new Text("Delay");
+
+    private final Text settingsAlRabbitText = new Text("ALBINO RABBIT");
+    private final Text settingsAlSpawnChanceText = new Text("Spawn Chance");
+    private final Text settingsAlDelayText = new Text("Delay");
+
+    private final ObservableList<Integer> chanceList = FXCollections.observableArrayList(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0);
 
 
     static synchronized Habitat getInstance() {
@@ -69,6 +90,14 @@ public class Habitat {
         return showStats;
     }
 
+    public TextField getTextFieldAlDelay() {
+        return textFieldAlDelay;
+    }
+
+    public TextField getTextFieldCrDelay() {
+        return textFieldCrDelay;
+    }
+
     public Group getRoot() {
         return root;
     }
@@ -93,6 +122,42 @@ public class Habitat {
         return sceneWidth;
     }
 
+    public Menu getEditMenu() {
+        return editMenu;
+    }
+
+    public Menu getFileMenu() {
+        return fileMenu;
+    }
+
+    public Menu getRunMenu() {
+        return runMenu;
+    }
+
+    public MenuBar getMenuBar() {
+        return menuBar;
+    }
+
+    public MenuItem getPauseMenuItem() {
+        return pauseMenuItem;
+    }
+
+    public MenuItem getStartMenuItem() {
+        return startMenuItem;
+    }
+
+    public MenuItem getStopMenuItem() {
+        return stopMenuItem;
+    }
+
+    public MenuItem getExitMenuItem() {
+        return exitMenuItem;
+    }
+
+    public Alert getIncorrectInput() {
+        return incorrectInput;
+    }
+
     public ObservableList<Integer> getChanceList() {
         return chanceList;
     }
@@ -107,7 +172,7 @@ public class Habitat {
 
     public void initStats() {
         rabbitCount.setVisible(false);
-        rabbitCount.setFont(Font.font("Cascadia Code", 17));
+        rabbitCount.setFont(Font.font("Cascadia Code", 13));
         rabbitCount.setX(1074);
         rabbitCount.setY(68);
         root.getChildren().add(rabbitCount);
@@ -128,12 +193,19 @@ public class Habitat {
         stage.setTitle("Rabbits");
         stage.setScene(scene);
         stage.setResizable(false);
+
         buttonPauseInit();
         buttonStartInit();
         buttonStopInit();
         radioButtonsShowStatsInit();
         alChanceListInit();
         crChanceListInit();
+        textAreaAlDelayInit();
+        textAreaCrDelayInit();
+        settingsMenuTextInit();
+        alertsInit();
+        menuInit();
+
         initStats();
         stage.setOnCloseRequest(windowEvent -> {
             Platform.exit();
@@ -187,8 +259,10 @@ public class Habitat {
     private void alChanceListInit() {
         alChanceBox.setValue(100);
         alChanceBox.setItems(chanceList);
-        alChanceBox.setLayoutX(1059);
-        alChanceBox.setLayoutY(203);
+        alChanceBox.setLayoutX(1172);
+        alChanceBox.setLayoutY(323);
+        alChanceBox.setPrefHeight(37);
+        alChanceBox.setPrefWidth(89);
         alChanceBox.setVisibleRowCount(3);
         root.getChildren().add(alChanceBox);
     }
@@ -196,11 +270,74 @@ public class Habitat {
     private void crChanceListInit() {
         crChanceBox.setValue(100);
         crChanceBox.setItems(chanceList);
-        crChanceBox.setLayoutX(1059);
-        crChanceBox.setLayoutY(252);
+        crChanceBox.setLayoutX(1172);
+        crChanceBox.setLayoutY(222);
+        crChanceBox.setPrefHeight(37);
+        crChanceBox.setPrefWidth(89);
         crChanceBox.setVisibleRowCount(3);
         root.getChildren().add(crChanceBox);
     }
 
+    private void textAreaAlDelayInit() {
+        textFieldAlDelay.setLayoutX(1172);
+        textFieldAlDelay.setLayoutY(360);
+        textFieldAlDelay.setPrefHeight(37);
+        textFieldAlDelay.setPrefWidth(89);
+        root.getChildren().add(textFieldAlDelay);
+    }
+
+    private void textAreaCrDelayInit() {
+        textFieldCrDelay.setLayoutX(1172);
+        textFieldCrDelay.setLayoutY(259);
+        textFieldCrDelay.setPrefHeight(37);
+        textFieldCrDelay.setPrefWidth(89);
+        root.getChildren().add(textFieldCrDelay);
+    }
+
+    private void settingsMenuTextInit() {
+
+        settingsCrDelayText.setFont(Font.font("Cascadia Code", 12));
+        settingsCrDelayText.setLayoutX(1058);
+        settingsCrDelayText.setLayoutY(282);
+
+        settingsCrRabbitText.setFont(Font.font("Cascadia Code", 12));
+        settingsCrRabbitText.setLayoutX(1108);
+        settingsCrRabbitText.setLayoutY(218);
+        settingsCrSpawnChanceText.setFont(Font.font("Cascadia Code", 12));
+        settingsCrSpawnChanceText.setLayoutX(1058);
+        settingsCrSpawnChanceText.setLayoutY(245);
+
+        settingsAlDelayText.setFont(Font.font("Cascadia Code", 12));
+        settingsAlDelayText.setLayoutX(1058);
+        settingsAlDelayText.setLayoutY(383);
+        settingsAlRabbitText.setFont(Font.font("Cascadia Code", 12));
+        settingsAlRabbitText.setLayoutX(1108);
+        settingsAlRabbitText.setLayoutY(319);
+        settingsAlSpawnChanceText.setFont(Font.font("Cascadia Code", 12));
+        settingsAlSpawnChanceText.setLayoutX(1059);
+        settingsAlSpawnChanceText.setLayoutY(346);
+
+
+        root.getChildren().addAll(settingsCrDelayText, settingsCrRabbitText, settingsCrSpawnChanceText,
+                settingsAlDelayText, settingsAlRabbitText, settingsAlSpawnChanceText);
+    }
+
+    private void alertsInit() {
+        incorrectInput.setTitle("Warning Alert");
+        incorrectInput.setHeaderText("Incorrect Input:");
+        incorrectInput.setContentText("Enter only a numeric value!");
+    }
+
+    private void menuInit() {
+        menuBar.getMenus().addAll(fileMenu, editMenu, runMenu);
+        menuBar.setPrefWidth(1280);
+        runMenu.getItems().add(startMenuItem);
+        runMenu.getItems().add(pauseMenuItem);
+        runMenu.getItems().add(stopMenuItem);
+
+        fileMenu.getItems().add(exitMenuItem);
+
+        root.getChildren().add(menuBar);
+    }
 
 }
