@@ -98,7 +98,7 @@ public class Controller {
                 case B -> startLogic();
                 case E -> pauseLogic();
                 case T -> showStatsLogic();
-                case S -> stopLogic();
+                case S -> stopWithInfoLogic();
             }
         });
     }
@@ -131,7 +131,7 @@ public class Controller {
         view.getStartButton().setVisible(true);
     }
 
-    private void stopLogic() {
+    private void stopWithInfoLogic() {
         timer.cancel();
         if (model.isStatsVisible() == false) {
             view.getStopSimulation().setContentText("Time: " + model.gettTick() +
@@ -142,26 +142,32 @@ public class Controller {
                     "\nAlbino chance: " + model.getAlChance() +
                     "\nAlbino delay:" + model.getAlTime());
             Optional<ButtonType> option = view.getStopSimulation().showAndWait();
-            if(option.get() == ButtonType.OK) {
-                for (Rabbit rabbit : model.getRabbitsList()) {
-                    rabbit.delete(view.getRoot());
-                }
-                model.setTimerWorking(false);
-                model.getRabbitsList().clear();
-                model.resetStats();
-                updateStats();
-                view.getStopButton().setDisable(true);
-                view.getStartButton().setDisable(false);
-                view.getPauseButton().setDisable(true);
-                view.getStopMenuItem().setDisable(true);
-                view.getStartMenuItem().setDisable(false);
-                view.getPauseMenuItem().setDisable(true);
-                view.getStartButton().setVisible(true);
-                view.getPauseButton().setVisible(false);
+            if (option.get() == ButtonType.OK) {
+                stopLogic();
             } else {
                 startTimer();
             }
+        } else {
+            stopLogic();
         }
+    }
+
+    private void stopLogic() {
+        for (Rabbit rabbit : model.getRabbitsList()) {
+            rabbit.delete(view.getRoot());
+        }
+        model.setTimerWorking(false);
+        model.getRabbitsList().clear();
+        model.resetStats();
+        updateStats();
+        view.getStopButton().setDisable(true);
+        view.getStartButton().setDisable(false);
+        view.getPauseButton().setDisable(true);
+        view.getStopMenuItem().setDisable(true);
+        view.getStartMenuItem().setDisable(false);
+        view.getPauseMenuItem().setDisable(true);
+        view.getStartButton().setVisible(true);
+        view.getPauseButton().setVisible(false);
     }
 
     private void showStatsLogic() {
@@ -188,7 +194,7 @@ public class Controller {
 
     private void buttonStopLogic() {
         view.getStopButton().setOnAction(ActionEvent -> {
-            stopLogic();
+            stopWithInfoLogic();
         });
     }
 
@@ -209,6 +215,7 @@ public class Controller {
             model.setStatsVisible(false);
             view.getRabbitCount().setVisible(model.isStatsVisible());
         });
+        view.getIncorrectInput().show();
     }
 
     private void radButtonShowStatsLogic() {
@@ -231,13 +238,10 @@ public class Controller {
     }
 
     private void textAreaAlDelayLogic() {
-        view.getTextFieldAlDelay().textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    view.getTextFieldAlDelay().setText(newValue.replaceAll("\\D", ""));
-                    view.getIncorrectInput().show();
-                }
+        view.getTextFieldAlDelay().textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                view.getTextFieldAlDelay().setText(newValue.replaceAll("\\D", ""));
+                view.getIncorrectInput().show(); // fixeme delete
             }
         });
         view.getTextFieldAlDelay().setOnKeyPressed(keyEvent -> {
@@ -282,7 +286,7 @@ public class Controller {
         });
         view.getStopMenuItem().setAccelerator(KeyCombination.keyCombination("S"));
         view.getStopMenuItem().setOnAction(ActionEvent -> {
-            stopLogic();
+            stopWithInfoLogic();
         });
     }
 

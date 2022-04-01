@@ -25,7 +25,7 @@ public class Habitat {
     private final ToggleGroup radioGroup = new ToggleGroup();
     private final RadioButton showStats = new RadioButton("Show stats");
     private final RadioButton hideStats = new RadioButton("Hide stats");
-    private final Alert incorrectInput = new Alert(Alert.AlertType.WARNING);
+    private final Alert     incorrectInput = new Alert(Alert.AlertType.WARNING);
     private final Alert stopSimulation = new Alert(Alert.AlertType.CONFIRMATION);
     private final TextField textFieldAlDelay = new TextField();
     private final TextField textFieldCrDelay = new TextField();
@@ -39,11 +39,13 @@ public class Habitat {
     private final Menu editMenu = new Menu("Edit");
     private final Menu fileMenu = new Menu("File");
     private final Menu viewMenu = new Menu("View");
+    private final Menu helpMenu = new Menu("Help");
     private final MenuItem startMenuItem = new MenuItem("Start");
     private final MenuItem stopMenuItem = new MenuItem("Stop");
     private final MenuItem pauseMenuItem = new MenuItem("Pause");
     private final MenuItem exitMenuItem = new MenuItem("Exit");
     private final MenuItem hideShowMenuItem = new MenuItem("Hide/Show Statistic");
+    private final MenuItem helpItem = new MenuItem("? Help");
 
     private Text rabbitCount = new Text();
 
@@ -55,7 +57,6 @@ public class Habitat {
     private final Text settingsAlRabbitText = new Text("ALBINO RABBIT");
     private final Text settingsAlSpawnChanceText = new Text("Spawn Chance");
     private final Text settingsAlDelayText = new Text("Delay");
-
     private final ObservableList<Integer> chanceList = FXCollections.observableArrayList(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0);
 
 
