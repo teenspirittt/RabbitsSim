@@ -11,7 +11,6 @@ public class AlbinoRabbit extends Rabbit {
         super();
     }
 
-
     @Override
     public void spawn(int x, int y, Group root) {
         imageView.setY(y);

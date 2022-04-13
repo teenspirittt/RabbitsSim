@@ -1,14 +1,13 @@
 package sample;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
 
 
+import java.awt.event.ActionEvent;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
@@ -38,6 +37,8 @@ public class Controller {
     public void initController(Habitat view) {
         this.view = view;
         keyBinds();
+        advancedModeLogic(model.isAdvancedMode());
+        model.setAdvancedMode(true);
         buttonPauseLogic();
         buttonStartLogic();
         buttonStopLogic();
@@ -47,6 +48,8 @@ public class Controller {
         comBoxAlbinoLogic();
         textAreaAlDelayLogic();
         textAreaCrDelayLogic();
+        textAreaAlLifeTimeLogic();
+        textAreaCrLifeTimeLogic();
         fileMenuLogic();
         runMenuLogic();
         viewMenuLogic();
@@ -55,22 +58,42 @@ public class Controller {
     public void update(int time) {
         int changesCounter = 0;
         int alSummaryChance = (int) (model.getAlCount() / 0.2);
-
+        int passID;
         if (time % model.getCrTime() == 0 && model.getCrChance() >= random.nextInt(100)) {
             model.setCrCount(model.getCrCount() + 1);
             changesCounter++;
-            model.getRabbitsList().add(new CommonRabbit());
+            model.getRabbitsVector().add(new CommonRabbit());
+            model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).setBirthTime(time);
+            model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).setLifeTime(model.getCrLifeTime());
+
+            passID = random.nextInt(1000);
+            while (model.getRabbitsIdSet().contains(passID)) {
+                passID = random.nextInt(1000);
+            }
+            model.getRabbitsIdSet().add(passID);
+            model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).setID(passID);
+            model.getRabbitsLifeTimeMap().put(passID, model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).getBirthTime());
         }
 
-        if (time % model.getAlTime() == 0 && alSummaryChance < model.getRabbitsList().size() && model.getAlChance() >= random.nextInt(100)) {
+        if (time % model.getAlTime() == 0 && alSummaryChance < model.getRabbitsVector().size() && model.getAlChance() >= random.nextInt(100)) {
             model.setAlCount(model.getAlCount() + 1);
             changesCounter++;
-            model.getRabbitsList().add(new AlbinoRabbit());
+            model.getRabbitsVector().add(new AlbinoRabbit());
+            model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).setBirthTime(time);
+            model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).setLifeTime(model.getAlLifeTime());
+
+            passID = random.nextInt(1000);
+            while (model.getRabbitsIdSet().contains(passID)) {
+                passID = random.nextInt(1000);
+            }
+            model.getRabbitsIdSet().add(passID);
+            model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).setID(passID);
+            model.getRabbitsLifeTimeMap().put(passID, model.getRabbitsVector().get(model.getRabbitsVector().size() - 1).getBirthTime());
         }
 
-        for (int i = model.getRabbitsList().size() - changesCounter; i < model.getRabbitsList().size(); ++i) {
-            model.getRabbitsList().get(i).spawn(random.nextInt(view.getSceneWidth() - 318), random.nextInt(view.getSceneHeight() - 120), view.getRoot());
-            view.getRoot().getChildren().add(model.getRabbitsList().get(i));
+        for (int i = model.getRabbitsVector().size() - changesCounter; i < model.getRabbitsVector().size(); ++i) {
+            model.getRabbitsVector().get(i).spawn(random.nextInt(view.getSceneWidth() - 318), random.nextInt(view.getSceneHeight() - 250), view.getRoot());
+            view.getRoot().getChildren().add(model.getRabbitsVector().get(i));
         }
     }
 
@@ -79,13 +102,11 @@ public class Controller {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        update(model.gettTick());
-                        updateStats();
-                        model.settTick(model.gettTick() + 1);
-                    }
+                Platform.runLater(() -> {
+                    update(model.gettTick());
+                    updateRabbitsPopulation();
+                    updateStats();
+                    model.settTick(model.gettTick() + 1);
                 });
             }
         }, 1000, 1000);
@@ -99,6 +120,7 @@ public class Controller {
                 case E -> pauseLogic();
                 case T -> showStatsLogic();
                 case S -> stopWithInfoLogic();
+                case I -> advancedModeLogic(!model.isAdvancedMode());
             }
         });
     }
@@ -133,7 +155,7 @@ public class Controller {
 
     private void stopWithInfoLogic() {
         timer.cancel();
-        if (model.isStatsVisible() == false) {
+        if (!model.isStatsVisible()) {
             view.getStopSimulation().setContentText("Time: " + model.gettTick() +
                     "\nClassic Rabbits: " + model.getCrCount() +
                     "\nAlbino Rabbits: " + model.getAlCount() +
@@ -153,11 +175,11 @@ public class Controller {
     }
 
     private void stopLogic() {
-        for (Rabbit rabbit : model.getRabbitsList()) {
+        for (Rabbit rabbit : model.getRabbitsVector()) {
             rabbit.delete(view.getRoot());
         }
         model.setTimerWorking(false);
-        model.getRabbitsList().clear();
+        model.getRabbitsVector().clear();
         model.resetStats();
         updateStats();
         view.getStopButton().setDisable(true);
@@ -173,7 +195,7 @@ public class Controller {
     private void showStatsLogic() {
         model.setStatsVisible(!model.isStatsVisible());
         view.getRabbitCount().setVisible(model.isStatsVisible());
-        if (model.isStatsVisible() == true)
+        if (model.isStatsVisible())
             view.getShowStats().fire();
         else
             view.getHideStats().fire();
@@ -215,58 +237,95 @@ public class Controller {
             model.setStatsVisible(false);
             view.getRabbitCount().setVisible(model.isStatsVisible());
         });
-        view.getIncorrectInput().show();
     }
 
     private void radButtonShowStatsLogic() {
         view.getShowStats().setOnAction(ActionEvent -> {
             model.setStatsVisible(true);
             view.getRabbitCount().setVisible(model.isStatsVisible());
+            updateStats();
         });
     }
 
     private void comBoxAlbinoLogic() {
+        view.getAlChanceBox().setValue(model.getAlChance());
         view.getAlChanceBox().setOnAction(ActionEvent -> {
             model.setAlChance(view.getAlChanceBox().getValue());
+            updateStats();
         });
     }
 
     private void comBoxCommonLogic() {
+        view.getCrChanceBox().setValue(model.getCrChance());
         view.getCrChanceBox().setOnAction(ActionEvent -> {
             model.setCrChance(view.getCrChanceBox().getValue());
+            updateStats();
         });
     }
 
     private void textAreaAlDelayLogic() {
+        view.getTextFieldAlDelay().setText(String.valueOf(model.getAlTime()));
         view.getTextFieldAlDelay().textProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 view.getTextFieldAlDelay().setText(newValue.replaceAll("\\D", ""));
-                view.getIncorrectInput().show(); // fixeme delete
+                view.getIncorrectInput().show();
             }
         });
         view.getTextFieldAlDelay().setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ENTER) {
+            if (!view.getTextFieldAlDelay().getText().equals("") && keyEvent.getCode() == KeyCode.ENTER) {
                 model.setAlTime(Integer.parseInt(view.getTextFieldAlDelay().getText()));
+                updateStats();
             }
         });
     }
 
     private void textAreaCrDelayLogic() {
-        view.getTextFieldCrDelay().textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    view.getTextFieldCrDelay().setText(newValue.replaceAll("\\D", ""));
-                    view.getIncorrectInput().show();
-                }
+        view.getTextFieldCrDelay().setText(String.valueOf(model.getCrTime()));
+        view.getTextFieldCrDelay().textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                view.getTextFieldCrDelay().setText(newValue.replaceAll("\\D", ""));
+                view.getIncorrectInput().show();
             }
         });
         view.getTextFieldCrDelay().setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ENTER) {
+            if (!view.getTextFieldCrDelay().getText().equals("") && keyEvent.getCode() == KeyCode.ENTER) {
+
                 model.setCrTime(Integer.parseInt(view.getTextFieldCrDelay().getText()));
+                updateStats();
             }
         });
+    }
 
+    private void textAreaAlLifeTimeLogic() {
+        view.getTextFieldAlLifeTime().setText(String.valueOf(model.getAlLifeTime()));
+        view.getTextFieldAlLifeTime().textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                view.getTextFieldAlLifeTime().setText(newValue.replaceAll("\\D", ""));
+                view.getIncorrectInput().show();
+            }
+        });
+        view.getTextFieldAlLifeTime().setOnKeyPressed(keyEvent -> {
+            if (!view.getTextFieldAlLifeTime().getText().equals("") && keyEvent.getCode() == KeyCode.ENTER) {
+                model.setAlLifeTime(Integer.parseInt(view.getTextFieldAlLifeTime().getText()));
+                updateStats();
+            }
+        });
+    }
+
+    private void textAreaCrLifeTimeLogic() {
+        view.getTextFieldCrLifeTime().setText(String.valueOf(model.getCrLifeTime()));
+        view.getTextFieldCrLifeTime().textProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                view.getTextFieldCrLifeTime().setText(newValue.replaceAll("\\D", ""));
+                view.getIncorrectInput().show();
+            }
+        });
+        view.getTextFieldCrLifeTime().setOnKeyPressed(keyEvent -> {
+            if (!view.getTextFieldCrLifeTime().getText().equals("") && keyEvent.getCode() == KeyCode.ENTER) {
+                model.setCrLifeTime(Integer.parseInt(view.getTextFieldCrLifeTime().getText()));
+                updateStats();
+            }
+        });
     }
 
     private void fileMenuLogic() {
@@ -295,6 +354,100 @@ public class Controller {
         view.getHideShowMenuItem().setOnAction(ActionEvent -> {
             showStatsLogic();
         });
+
+        view.getShowAliveRabbits().setOnAction(ActionEvent0 -> {
+            String str = "";
+            String rabbitType;
+            for (Rabbit rabbit : model.getRabbitsVector()) {
+                int ID = rabbit.getID();
+                if (rabbit instanceof CommonRabbit)
+                    rabbitType = "Common";
+                else
+                    rabbitType = "Albino";
+                str = str.concat( rabbitType +"\t\tID: " + ID + "\tLeft to live: " + ((rabbit.getLifeTime() + rabbit.getBirthTime()) - model.gettTick()) + " seconds\n");
+            }
+            view.getInfoAliveRabbits().setContentText("");
+            view.getInfoAliveRabbits().setContentText(str);
+            view.getInfoAliveRabbits().setOnShowing(ActionEvent1 -> {
+                pauseLogic();
+            });
+            view.getInfoAliveRabbits().setOnCloseRequest(ActionEvent2 -> {
+                startLogic();
+            });
+            view.getInfoAliveRabbits().show();
+        });
+
+        view.getAdvancedMenuItem().setOnAction(ActionEvent3 -> {
+            advancedModeLogic(!model.isAdvancedMode());
+        });
+
+
     }
 
+    private void helpMenuLogic() {
+        view.getHelpItem().setOnAction(ActionEvent -> {
+
+        });
+    }
+
+
+    private void removeRabbit(Rabbit rabbit) {
+        rabbit.delete(view.getRoot());
+        model.getRabbitsIdSet().remove(rabbit.ID);
+        model.getRabbitsLifeTimeMap().remove(rabbit.ID);
+        model.getRabbitsVector().remove(rabbit);
+
+        if (rabbit instanceof CommonRabbit) {
+            model.setCrCount(model.getCrCount() - 1);
+        } else {
+            model.setAlCount(model.getAlCount() - 1);
+        }
+    }
+
+    private void updateRabbitsPopulation() {
+        for (int i = 0; i < model.getRabbitsVector().size(); ++i) {
+            Rabbit a = model.getRabbitsVector().get(i);
+            if (a.getBirthTime() + a.getLifeTime() == model.gettTick()) {
+                removeRabbit(a);
+                i--;
+            }
+        }
+    }
+
+    private void advancedModeLogic(boolean isWorking) {
+        model.setAdvancedMode(!model.isAdvancedMode());
+        view.getSettingsAlRabbitText().setVisible(!isWorking);
+        view.getSettingsAlDelayText().setVisible(!isWorking);
+        view.getSettingsAlSpawnChanceText().setVisible(!isWorking);
+        view.getSettingsAlLifeTimeText().setVisible(!isWorking);
+        view.getAlChanceBox().setVisible(!isWorking);
+        view.getTextFieldAlDelay().setVisible(!isWorking);
+        view.getTextFieldAlLifeTime().setVisible(!isWorking);
+
+        view.getSettingsAlRabbitText().setDisable(isWorking);
+        view.getSettingsAlDelayText().setDisable(isWorking);
+        view.getSettingsAlSpawnChanceText().setDisable(isWorking);
+        view.getSettingsAlLifeTimeText().setDisable(isWorking);
+        view.getAlChanceBox().setDisable(isWorking);
+        view.getTextFieldAlDelay().setDisable(isWorking);
+        view.getTextFieldAlLifeTime().setDisable(isWorking);
+
+
+        view.getSettingsCrRabbitText().setVisible(!isWorking);
+        view.getSettingsCrDelayText().setVisible(!isWorking);
+        view.getSettingsCrSpawnChanceText().setVisible(!isWorking);
+        view.getCrChanceBox().setVisible(!isWorking);
+        view.getTextFieldCrDelay().setVisible(!isWorking);
+        view.getTextFieldCrLifeTime().setVisible(!isWorking);
+        view.getSettingsCrLifeTimeText().setVisible(!isWorking);
+
+        view.getSettingsCrRabbitText().setDisable(isWorking);
+        view.getSettingsCrDelayText().setDisable(isWorking);
+        view.getSettingsCrSpawnChanceText().setDisable(isWorking);
+        view.getCrChanceBox().setDisable(isWorking);
+        view.getTextFieldCrDelay().setDisable(isWorking);
+        view.getTextFieldCrLifeTime().setDisable(isWorking);
+        view.getSettingsCrLifeTimeText().setDisable(isWorking);
+
+    }
 }

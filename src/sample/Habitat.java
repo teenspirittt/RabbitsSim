@@ -25,15 +25,19 @@ public class Habitat {
     private final ToggleGroup radioGroup = new ToggleGroup();
     private final RadioButton showStats = new RadioButton("Show stats");
     private final RadioButton hideStats = new RadioButton("Hide stats");
-    private final Alert     incorrectInput = new Alert(Alert.AlertType.WARNING);
+    private final Alert incorrectInput = new Alert(Alert.AlertType.WARNING);
+    private final Alert incorrectRange = new Alert(Alert.AlertType.WARNING);
     private final Alert stopSimulation = new Alert(Alert.AlertType.CONFIRMATION);
+    private final Alert infoAliveRabbits = new Alert(Alert.AlertType.INFORMATION);
     private final TextField textFieldAlDelay = new TextField();
     private final TextField textFieldCrDelay = new TextField();
+    private final TextField textFieldAlLifeTime = new TextField();
+    private final TextField textFieldCrLifeTime = new TextField();
     private final ComboBox<Integer> alChanceBox = new ComboBox<Integer>();
     private final ComboBox<Integer> crChanceBox = new ComboBox<Integer>();
     private final Group root = new Group();
     private final Stage stage = new Stage();
-    private Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878"));
+    private Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878")); // Medium green
     private final MenuBar menuBar = new MenuBar();
     private final Menu runMenu = new Menu("Run");
     private final Menu editMenu = new Menu("Edit");
@@ -45,7 +49,9 @@ public class Habitat {
     private final MenuItem pauseMenuItem = new MenuItem("Pause");
     private final MenuItem exitMenuItem = new MenuItem("Exit");
     private final MenuItem hideShowMenuItem = new MenuItem("Hide/Show Statistic");
+    private final MenuItem showAliveRabbits = new MenuItem("Show Alive Rabbits");
     private final MenuItem helpItem = new MenuItem("? Help");
+    private final MenuItem advancedMenuItem = new MenuItem("Advanced Mode");
 
     private Text rabbitCount = new Text();
 
@@ -53,10 +59,12 @@ public class Habitat {
     private final Text settingsCrRabbitText = new Text("COMMON RABBIT");
     private final Text settingsCrSpawnChanceText = new Text("Spawn Chance");
     private final Text settingsCrDelayText = new Text("Delay");
+    private final Text settingsCrLifeTimeText = new Text("LifeTime");
 
     private final Text settingsAlRabbitText = new Text("ALBINO RABBIT");
     private final Text settingsAlSpawnChanceText = new Text("Spawn Chance");
     private final Text settingsAlDelayText = new Text("Delay");
+    private final Text settingsAlLifeTimeText = new Text("LifeTime");
     private final ObservableList<Integer> chanceList = FXCollections.observableArrayList(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0);
 
 
@@ -103,6 +111,14 @@ public class Habitat {
         return textFieldCrDelay;
     }
 
+    public TextField getTextFieldAlLifeTime() {
+        return textFieldAlLifeTime;
+    }
+
+    public TextField getTextFieldCrLifeTime() {
+        return textFieldCrLifeTime;
+    }
+
     public Group getRoot() {
         return root;
     }
@@ -143,6 +159,22 @@ public class Habitat {
         return menuBar;
     }
 
+    public Menu getViewMenu() {
+        return viewMenu;
+    }
+
+    public Menu getHelpMenu() {
+        return helpMenu;
+    }
+
+    public MenuItem getHelpItem() {
+        return helpItem;
+    }
+
+    public MenuItem getShowAliveRabbits() {
+        return showAliveRabbits;
+    }
+
     public MenuItem getPauseMenuItem() {
         return pauseMenuItem;
     }
@@ -163,8 +195,52 @@ public class Habitat {
         return hideShowMenuItem;
     }
 
+    public MenuItem getAdvancedMenuItem() {
+        return advancedMenuItem;
+    }
+
     public Alert getIncorrectInput() {
         return incorrectInput;
+    }
+
+    public Text getSettingsAlDelayText() {
+        return settingsAlDelayText;
+    }
+
+    public Text getSettingsAlLifeTimeText() {
+        return settingsAlLifeTimeText;
+    }
+
+    public Text getSettingsAlRabbitText() {
+        return settingsAlRabbitText;
+    }
+
+    public Text getSettingsAlSpawnChanceText() {
+        return settingsAlSpawnChanceText;
+    }
+
+    public Text getSettingsCrDelayText() {
+        return settingsCrDelayText;
+    }
+
+    public Text getSettingsCrLifeTimeText() {
+        return settingsCrLifeTimeText;
+    }
+
+    public Text getSettingsCrRabbitText() {
+        return settingsCrRabbitText;
+    }
+
+    public Text getSettingsCrSpawnChanceText() {
+        return settingsCrSpawnChanceText;
+    }
+
+    public Alert getInfoAliveRabbits() {
+        return infoAliveRabbits;
+    }
+
+    public Alert getIncorrectRange() {
+        return incorrectRange;
     }
 
     public Alert getStopSimulation() {
@@ -211,10 +287,12 @@ public class Habitat {
         buttonStartInit();
         buttonStopInit();
         radioButtonsShowStatsInit();
-        alChanceListInit();
-        crChanceListInit();
+        alChanceComBoxInit();
+        crChanceComBoxInit();
         textAreaAlDelayInit();
         textAreaCrDelayInit();
+        textFieldAlLifeTimeInit();
+        textFieldCrLifeTimeInit();
         settingsMenuTextInit();
         alertsInit();
         menuInit();
@@ -269,19 +347,17 @@ public class Habitat {
         root.getChildren().addAll(showStats, hideStats);
     }
 
-    private void alChanceListInit() {
-        alChanceBox.setValue(100);
+    private void alChanceComBoxInit() {
         alChanceBox.setItems(chanceList);
         alChanceBox.setLayoutX(1172);
-        alChanceBox.setLayoutY(323);
+        alChanceBox.setLayoutY(386);
         alChanceBox.setPrefHeight(37);
         alChanceBox.setPrefWidth(89);
         alChanceBox.setVisibleRowCount(3);
         root.getChildren().add(alChanceBox);
     }
 
-    private void crChanceListInit() {
-        crChanceBox.setValue(100);
+    private void crChanceComBoxInit() {
         crChanceBox.setItems(chanceList);
         crChanceBox.setLayoutX(1172);
         crChanceBox.setLayoutY(222);
@@ -293,7 +369,7 @@ public class Habitat {
 
     private void textAreaAlDelayInit() {
         textFieldAlDelay.setLayoutX(1172);
-        textFieldAlDelay.setLayoutY(360);
+        textFieldAlDelay.setLayoutY(423);
         textFieldAlDelay.setPrefHeight(37);
         textFieldAlDelay.setPrefWidth(89);
         root.getChildren().add(textFieldAlDelay);
@@ -307,8 +383,24 @@ public class Habitat {
         root.getChildren().add(textFieldCrDelay);
     }
 
-    private void settingsMenuTextInit() {
+    private void textFieldAlLifeTimeInit() {
+        textFieldAlLifeTime.setLayoutX(1172);
+        textFieldAlLifeTime.setLayoutY(461);
+        textFieldAlLifeTime.setPrefHeight(37);
+        textFieldAlLifeTime.setPrefWidth(89);
+        root.getChildren().add(textFieldAlLifeTime);
+    }
 
+    private void textFieldCrLifeTimeInit() {
+        textFieldCrLifeTime.setLayoutX(1172);
+        textFieldCrLifeTime.setLayoutY(296);
+        textFieldCrLifeTime.setPrefHeight(37);
+        textFieldCrLifeTime.setPrefWidth(89);
+        root.getChildren().add(textFieldCrLifeTime);
+    }
+
+    private void settingsMenuTextInit() {
+        // common rabbit
         settingsCrDelayText.setFont(Font.font("Cascadia Code", 12));
         settingsCrDelayText.setLayoutX(1058);
         settingsCrDelayText.setLayoutY(282);
@@ -316,23 +408,35 @@ public class Habitat {
         settingsCrRabbitText.setFont(Font.font("Cascadia Code", 12));
         settingsCrRabbitText.setLayoutX(1108);
         settingsCrRabbitText.setLayoutY(218);
+
         settingsCrSpawnChanceText.setFont(Font.font("Cascadia Code", 12));
         settingsCrSpawnChanceText.setLayoutX(1058);
         settingsCrSpawnChanceText.setLayoutY(245);
 
+        settingsCrLifeTimeText.setFont(Font.font("Cascadia Code", 12));
+        settingsCrLifeTimeText.setLayoutX(1058);
+        settingsCrLifeTimeText.setLayoutY(319);
+
+        // common rabbit albino rabbit
         settingsAlDelayText.setFont(Font.font("Cascadia Code", 12));
         settingsAlDelayText.setLayoutX(1058);
-        settingsAlDelayText.setLayoutY(383);
+        settingsAlDelayText.setLayoutY(447);
+
         settingsAlRabbitText.setFont(Font.font("Cascadia Code", 12));
-        settingsAlRabbitText.setLayoutX(1108);
-        settingsAlRabbitText.setLayoutY(319);
+        settingsAlRabbitText.setLayoutX(1118);
+        settingsAlRabbitText.setLayoutY(382);
+
         settingsAlSpawnChanceText.setFont(Font.font("Cascadia Code", 12));
         settingsAlSpawnChanceText.setLayoutX(1059);
-        settingsAlSpawnChanceText.setLayoutY(346);
+        settingsAlSpawnChanceText.setLayoutY(409);
+
+        settingsAlLifeTimeText.setFont(Font.font("Cascadia Code", 12));
+        settingsAlLifeTimeText.setLayoutX(1058);
+        settingsAlLifeTimeText.setLayoutY(484);
 
 
         root.getChildren().addAll(settingsCrDelayText, settingsCrRabbitText, settingsCrSpawnChanceText,
-                settingsAlDelayText, settingsAlRabbitText, settingsAlSpawnChanceText);
+                settingsAlDelayText, settingsAlRabbitText, settingsAlSpawnChanceText, settingsAlLifeTimeText, settingsCrLifeTimeText);
     }
 
     private void alertsInit() {
@@ -340,12 +444,19 @@ public class Habitat {
         incorrectInput.setHeaderText("Incorrect Input:");
         incorrectInput.setContentText("Enter only a numeric value!");
 
+        incorrectRange.setTitle("Warning Alert");
+        incorrectRange.setHeaderText("Incorrect Input:");
+        incorrectRange.setContentText("Enter values between 1 and 60!");
+
         stopSimulation.setTitle("Stop Simulation");
         stopSimulation.setHeaderText("Are you sure want stop simulation?\nIt will delete all rabbits.");
+
+        infoAliveRabbits.setTitle("Alive Rabbits");
+        infoAliveRabbits.setHeaderText("Alive Rabbits:");
     }
 
     private void menuInit() {
-        menuBar.getMenus().addAll(fileMenu, editMenu, viewMenu, runMenu);
+        menuBar.getMenus().addAll(fileMenu, editMenu, viewMenu, runMenu, helpMenu);
         menuBar.setPrefWidth(1280);
         runMenu.getItems().add(startMenuItem);
         runMenu.getItems().add(pauseMenuItem);
@@ -353,9 +464,10 @@ public class Habitat {
 
         fileMenu.getItems().add(exitMenuItem);
 
-        viewMenu.getItems().add(hideShowMenuItem);
+        viewMenu.getItems().addAll(hideShowMenuItem, showAliveRabbits, advancedMenuItem);
+
+        helpMenu.getItems().add(helpItem);
 
         root.getChildren().add(menuBar);
     }
-
 }

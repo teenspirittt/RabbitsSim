@@ -1,6 +1,8 @@
 package sample;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeSet;
+import java.util.Vector;
 
 public class Model {
 
@@ -9,13 +11,18 @@ public class Model {
     private int crCount = 0, alCount = 0;
     private int crChance = 70;
     private int alChance = 20;
+    private int alLifeTime = 2;
+    private int crLifeTime = 2;
     private int crTime = 2;
     private int alTime = 2;
     private int tTick = 0;
     private boolean isTimerWorking = false;
     private boolean isStatsVisible = false;
+    private boolean isAdvancedMode = true;
 
-    private final ArrayList<Rabbit> rabbitsList = new ArrayList();
+    private final Vector<Rabbit> rabbitsVector = new Vector<>();
+    private final TreeSet<Integer> rabbitsIdSet = new TreeSet<>();
+    private final HashMap<Integer, Integer> rabbitsLifeTimeMap = new HashMap<>();
 
     static synchronized Model getInstance() {
         if (instance == null) {
@@ -24,15 +31,23 @@ public class Model {
         return instance;
     }
 
-    public ArrayList<Rabbit> getRabbitsList() {
-        return rabbitsList;
+    public Vector<Rabbit> getRabbitsVector() {
+        return rabbitsVector;
+    }
+
+    public HashMap<Integer, Integer> getRabbitsLifeTimeMap() {
+        return rabbitsLifeTimeMap;
+    }
+
+    public TreeSet<Integer> getRabbitsIdSet() {
+        return rabbitsIdSet;
     }
 
     public void resetStats() {
         crCount = 0;
         alCount = 0;
         tTick = 0;
-        rabbitsList.clear();
+        rabbitsVector.clear();
     }
 
 
@@ -56,8 +71,25 @@ public class Model {
         return alCount;
     }
 
+    public int getAlLifeTime() {
+        return alLifeTime;
+    }
+
+    public int getCrLifeTime() {
+        return crLifeTime;
+    }
+
     public boolean isStatsVisible() {
         return isStatsVisible;
+    }
+
+    public boolean isAdvancedMode() {
+        return isAdvancedMode;
+    }
+
+
+    public void setAdvancedMode(boolean advancedMode) {
+        isAdvancedMode = advancedMode;
     }
 
     public boolean isTimerWorking() {
@@ -102,6 +134,14 @@ public class Model {
 
     public void setCrTime(int crTime) {
         this.crTime = crTime;
+    }
+
+    public void setAlLifeTime(int alLifeTime) {
+        this.alLifeTime = alLifeTime;
+    }
+
+    public void setCrLifeTime(int crLifeTime) {
+        this.crLifeTime = crLifeTime;
     }
 
     public void settTick(int tTick) {
