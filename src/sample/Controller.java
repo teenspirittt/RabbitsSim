@@ -1,5 +1,6 @@
 package sample;
 
+import sample.rabbit.*;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
@@ -7,7 +8,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.paint.Color;
 
 
-import java.awt.event.ActionEvent;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
@@ -18,7 +18,6 @@ public class Controller {
     private static Controller instance;
 
     Model model = Model.getInstance();
-
     Habitat view;
 
     private final Random random = new Random();
@@ -37,8 +36,9 @@ public class Controller {
     public void initController(Habitat view) {
         this.view = view;
         keyBinds();
+
         advancedModeLogic(model.isAdvancedMode());
-        model.setAdvancedMode(true);
+
         buttonPauseLogic();
         buttonStartLogic();
         buttonStopLogic();
@@ -53,6 +53,7 @@ public class Controller {
         fileMenuLogic();
         runMenuLogic();
         viewMenuLogic();
+        helpMenuLogic();
     }
 
     public void update(int time) {
@@ -95,6 +96,7 @@ public class Controller {
             model.getRabbitsVector().get(i).spawn(random.nextInt(view.getSceneWidth() - 318), random.nextInt(view.getSceneHeight() - 250), view.getRoot());
             view.getRoot().getChildren().add(model.getRabbitsVector().get(i));
         }
+
     }
 
     private Timer startTimer() {
@@ -120,7 +122,7 @@ public class Controller {
                 case E -> pauseLogic();
                 case T -> showStatsLogic();
                 case S -> stopWithInfoLogic();
-                case I -> advancedModeLogic(!model.isAdvancedMode());
+                case I -> advancedModeLogic(model.isAdvancedMode());
             }
         });
     }
@@ -364,7 +366,7 @@ public class Controller {
                     rabbitType = "Common";
                 else
                     rabbitType = "Albino";
-                str = str.concat( rabbitType +"\t\tID: " + ID + "\tLeft to live: " + ((rabbit.getLifeTime() + rabbit.getBirthTime()) - model.gettTick()) + " seconds\n");
+                str = str.concat(rabbitType + "\t\tID: " + ID + "\tLeft to live: " + ((rabbit.getLifeTime() + rabbit.getBirthTime()) - model.gettTick()) + " seconds\n");
             }
             view.getInfoAliveRabbits().setContentText("");
             view.getInfoAliveRabbits().setContentText(str);
@@ -378,16 +380,14 @@ public class Controller {
         });
 
         view.getAdvancedMenuItem().setOnAction(ActionEvent3 -> {
-            advancedModeLogic(!model.isAdvancedMode());
+            advancedModeLogic(model.isAdvancedMode());
         });
 
 
     }
 
     private void helpMenuLogic() {
-        view.getHelpItem().setOnAction(ActionEvent -> {
 
-        });
     }
 
 
@@ -416,38 +416,38 @@ public class Controller {
 
     private void advancedModeLogic(boolean isWorking) {
         model.setAdvancedMode(!model.isAdvancedMode());
-        view.getSettingsAlRabbitText().setVisible(!isWorking);
-        view.getSettingsAlDelayText().setVisible(!isWorking);
-        view.getSettingsAlSpawnChanceText().setVisible(!isWorking);
-        view.getSettingsAlLifeTimeText().setVisible(!isWorking);
-        view.getAlChanceBox().setVisible(!isWorking);
-        view.getTextFieldAlDelay().setVisible(!isWorking);
-        view.getTextFieldAlLifeTime().setVisible(!isWorking);
+        view.getSettingsAlRabbitText().setVisible(isWorking);
+        view.getSettingsAlDelayText().setVisible(isWorking);
+        view.getSettingsAlSpawnChanceText().setVisible(isWorking);
+        view.getSettingsAlLifeTimeText().setVisible(isWorking);
+        view.getAlChanceBox().setVisible(isWorking);
+        view.getTextFieldAlDelay().setVisible(isWorking);
+        view.getTextFieldAlLifeTime().setVisible(isWorking);
 
-        view.getSettingsAlRabbitText().setDisable(isWorking);
-        view.getSettingsAlDelayText().setDisable(isWorking);
-        view.getSettingsAlSpawnChanceText().setDisable(isWorking);
-        view.getSettingsAlLifeTimeText().setDisable(isWorking);
-        view.getAlChanceBox().setDisable(isWorking);
-        view.getTextFieldAlDelay().setDisable(isWorking);
-        view.getTextFieldAlLifeTime().setDisable(isWorking);
+        view.getSettingsAlRabbitText().setDisable(!isWorking);
+        view.getSettingsAlDelayText().setDisable(!isWorking);
+        view.getSettingsAlSpawnChanceText().setDisable(!isWorking);
+        view.getSettingsAlLifeTimeText().setDisable(!isWorking);
+        view.getAlChanceBox().setDisable(!isWorking);
+        view.getTextFieldAlDelay().setDisable(!isWorking);
+        view.getTextFieldAlLifeTime().setDisable(!isWorking);
 
 
-        view.getSettingsCrRabbitText().setVisible(!isWorking);
-        view.getSettingsCrDelayText().setVisible(!isWorking);
-        view.getSettingsCrSpawnChanceText().setVisible(!isWorking);
-        view.getCrChanceBox().setVisible(!isWorking);
-        view.getTextFieldCrDelay().setVisible(!isWorking);
-        view.getTextFieldCrLifeTime().setVisible(!isWorking);
-        view.getSettingsCrLifeTimeText().setVisible(!isWorking);
+        view.getSettingsCrRabbitText().setVisible(isWorking);
+        view.getSettingsCrDelayText().setVisible(isWorking);
+        view.getSettingsCrSpawnChanceText().setVisible(isWorking);
+        view.getCrChanceBox().setVisible(isWorking);
+        view.getTextFieldCrDelay().setVisible(isWorking);
+        view.getTextFieldCrLifeTime().setVisible(isWorking);
+        view.getSettingsCrLifeTimeText().setVisible(isWorking);
 
-        view.getSettingsCrRabbitText().setDisable(isWorking);
-        view.getSettingsCrDelayText().setDisable(isWorking);
-        view.getSettingsCrSpawnChanceText().setDisable(isWorking);
-        view.getCrChanceBox().setDisable(isWorking);
-        view.getTextFieldCrDelay().setDisable(isWorking);
-        view.getTextFieldCrLifeTime().setDisable(isWorking);
-        view.getSettingsCrLifeTimeText().setDisable(isWorking);
+        view.getSettingsCrRabbitText().setDisable(!isWorking);
+        view.getSettingsCrDelayText().setDisable(!isWorking);
+        view.getSettingsCrSpawnChanceText().setDisable(!isWorking);
+        view.getCrChanceBox().setDisable(!isWorking);
+        view.getTextFieldCrDelay().setDisable(!isWorking);
+        view.getTextFieldCrLifeTime().setDisable(!isWorking);
+        view.getSettingsCrLifeTimeText().setDisable(!isWorking);
 
     }
 }

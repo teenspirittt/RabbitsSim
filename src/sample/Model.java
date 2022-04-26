@@ -1,13 +1,12 @@
 package sample;
 
+import sample.rabbit.*;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
 public class Model {
-
     private static Model instance;
-
     private int crCount = 0, alCount = 0;
     private int crChance = 70;
     private int alChance = 20;
@@ -149,4 +148,8 @@ public class Model {
     }
 
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
