@@ -25,7 +25,12 @@ public class AlbinoRabbit extends Rabbit {
 
 
     @Override
-    public void move() {
+    public void move(Rabbit rabbit) {
+
+    }
+
+
+    public void moveImage() {
 
     }
 }

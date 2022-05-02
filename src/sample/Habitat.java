@@ -54,7 +54,23 @@ public class Habitat {
     private final MenuItem advancedMenuItem = new MenuItem("Advanced Mode");
 
     private Text rabbitCount = new Text();
+    private Text timeText = new Text();
 
+    public static void setInstance(Habitat instance) {
+        Habitat.instance = instance;
+    }
+
+    public ToggleGroup getRadioGroup() {
+        return radioGroup;
+    }
+
+    public Text getTimeText() {
+        return timeText;
+    }
+
+    public void setTimeText(Text timeText) {
+        this.timeText = timeText;
+    }
 
     private final Text settingsCrRabbitText = new Text("COMMON RABBIT");
     private final Text settingsCrSpawnChanceText = new Text("Spawn Chance");
@@ -261,10 +277,20 @@ public class Habitat {
 
     public void initStats() {
         rabbitCount.setVisible(false);
+        rabbitCount.setFill(Color.web("669933"));
         rabbitCount.setFont(Font.font("Cascadia Code", 13));
-        rabbitCount.setX(1074);
-        rabbitCount.setY(68);
+        rabbitCount.setX(1075);
+        rabbitCount.setY(55);
         root.getChildren().add(rabbitCount);
+    }
+
+    public void initTimeText() {
+        timeText.setVisible(true);
+        timeText.setFill(Color.web("669933"));
+        timeText.setFont(Font.font("Cascadia Code", 24));
+        timeText.setX(1126);
+        timeText.setY(116);
+        root.getChildren().add(timeText);
     }
 
     public void initScene() {
@@ -274,7 +300,9 @@ public class Habitat {
         Rectangle recFace = new Rectangle(1039, 0, 241, 720);
         recFace.setFill(Color.web("0000004a"));
 
-        Rectangle recInfo = new Rectangle(1061, 39, 203, 132);
+        Rectangle recInfo = new Rectangle(1061, 39, 203, 142);
+        recInfo.setStroke(Color.BLACK);
+        recInfo.setStrokeWidth(1);
         recInfo.setFill(Color.web("00000086"));
 
         root.getChildren().addAll(recFace, recInfo);
@@ -295,6 +323,7 @@ public class Habitat {
         textFieldCrLifeTimeInit();
         settingsMenuTextInit();
         alertsInit();
+        initTimeText();
         menuInit();
 
         initStats();
@@ -334,15 +363,15 @@ public class Habitat {
     }
 
     private void radioButtonsShowStatsInit() {
+        hideStats.fire();
         hideStats.setFont(Font.font("Cascadia Code", 12));
         hideStats.setToggleGroup(radioGroup);
         hideStats.setLayoutX(1065);
-        hideStats.setLayoutY(171);
-
+        hideStats.setLayoutY(184);
         showStats.setFont(Font.font("Cascadia Code", 12));
         showStats.setToggleGroup(radioGroup);
         showStats.setLayoutX(1170);
-        showStats.setLayoutY(171);
+        showStats.setLayoutY(184);
 
         root.getChildren().addAll(showStats, hideStats);
     }
@@ -360,7 +389,7 @@ public class Habitat {
     private void crChanceComBoxInit() {
         crChanceBox.setItems(chanceList);
         crChanceBox.setLayoutX(1172);
-        crChanceBox.setLayoutY(222);
+        crChanceBox.setLayoutY(237);
         crChanceBox.setPrefHeight(37);
         crChanceBox.setPrefWidth(89);
         crChanceBox.setVisibleRowCount(3);
@@ -377,7 +406,7 @@ public class Habitat {
 
     private void textAreaCrDelayInit() {
         textFieldCrDelay.setLayoutX(1172);
-        textFieldCrDelay.setLayoutY(259);
+        textFieldCrDelay.setLayoutY(274);
         textFieldCrDelay.setPrefHeight(37);
         textFieldCrDelay.setPrefWidth(89);
         root.getChildren().add(textFieldCrDelay);
@@ -393,7 +422,7 @@ public class Habitat {
 
     private void textFieldCrLifeTimeInit() {
         textFieldCrLifeTime.setLayoutX(1172);
-        textFieldCrLifeTime.setLayoutY(296);
+        textFieldCrLifeTime.setLayoutY(311);
         textFieldCrLifeTime.setPrefHeight(37);
         textFieldCrLifeTime.setPrefWidth(89);
         root.getChildren().add(textFieldCrLifeTime);
@@ -403,19 +432,19 @@ public class Habitat {
         // common rabbit
         settingsCrDelayText.setFont(Font.font("Cascadia Code", 12));
         settingsCrDelayText.setLayoutX(1058);
-        settingsCrDelayText.setLayoutY(282);
+        settingsCrDelayText.setLayoutY(297);
 
         settingsCrRabbitText.setFont(Font.font("Cascadia Code", 12));
         settingsCrRabbitText.setLayoutX(1108);
-        settingsCrRabbitText.setLayoutY(218);
+        settingsCrRabbitText.setLayoutY(233);
 
         settingsCrSpawnChanceText.setFont(Font.font("Cascadia Code", 12));
         settingsCrSpawnChanceText.setLayoutX(1058);
-        settingsCrSpawnChanceText.setLayoutY(245);
+        settingsCrSpawnChanceText.setLayoutY(260);
 
         settingsCrLifeTimeText.setFont(Font.font("Cascadia Code", 12));
         settingsCrLifeTimeText.setLayoutX(1058);
-        settingsCrLifeTimeText.setLayoutY(319);
+        settingsCrLifeTimeText.setLayoutY(334);
 
         // common rabbit albino rabbit
         settingsAlDelayText.setFont(Font.font("Cascadia Code", 12));

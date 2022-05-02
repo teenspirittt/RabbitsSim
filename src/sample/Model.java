@@ -10,8 +10,8 @@ public class Model {
     private int crCount = 0, alCount = 0;
     private int crChance = 70;
     private int alChance = 20;
-    private int alLifeTime = 2;
-    private int crLifeTime = 2;
+    private int alLifeTime = 5;
+    private int crLifeTime = 5;
     private int crTime = 2;
     private int alTime = 2;
     private int tTick = 0;

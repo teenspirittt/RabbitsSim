@@ -1,5 +1,7 @@
 package sample;
 
+import sample.rabbitAI.*;
+import javafx.scene.text.Font;
 import sample.rabbit.*;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
@@ -17,8 +19,12 @@ import java.util.TimerTask;
 public class Controller {
     private static Controller instance;
 
+
+
     Model model = Model.getInstance();
     Habitat view;
+
+    final CommonRabbitAI commonRabbitAI = new CommonRabbitAI(model.getRabbitsVector());
 
     private final Random random = new Random();
     private Timer timer = new Timer();
@@ -36,7 +42,7 @@ public class Controller {
     public void initController(Habitat view) {
         this.view = view;
         keyBinds();
-
+        startAIThreads();
         advancedModeLogic(model.isAdvancedMode());
 
         buttonPauseLogic();
@@ -93,10 +99,14 @@ public class Controller {
         }
 
         for (int i = model.getRabbitsVector().size() - changesCounter; i < model.getRabbitsVector().size(); ++i) {
-            model.getRabbitsVector().get(i).spawn(random.nextInt(view.getSceneWidth() - 318), random.nextInt(view.getSceneHeight() - 250), view.getRoot());
+            model.getRabbitsVector().get(i).setBirthX(random.nextInt(view.getSceneWidth() - 339));
+            model.getRabbitsVector().get(i).setBirthY(20 + random.nextInt(view.getSceneHeight() - 77 - 20)); // 77-rabbit height, 20-menu height
+            model.getRabbitsVector().get(i).setPosX(model.getRabbitsVector().get(i).getBirthX());
+            model.getRabbitsVector().get(i).setPosY(model.getRabbitsVector().get(i).getBirthY());
+            model.getRabbitsVector().get(i).spawn(model.getRabbitsVector().get(i).getBirthX(), model.getRabbitsVector().get(i).getBirthY(), view.getRoot());
+
             view.getRoot().getChildren().add(model.getRabbitsVector().get(i));
         }
-
     }
 
     private Timer startTimer() {
@@ -108,6 +118,7 @@ public class Controller {
                     update(model.gettTick());
                     updateRabbitsPopulation();
                     updateStats();
+                    updateTime();
                     model.settTick(model.gettTick() + 1);
                 });
             }
@@ -139,11 +150,13 @@ public class Controller {
             model.setTimerWorking(true);
             view.getPauseButton().setVisible(true);
             view.getStartButton().setVisible(false);
+            startMovement();
         }
     }
 
     private void pauseLogic() {
         timer.cancel();
+        pauseMovement();
         view.getStartButton().setDisable(false);
         view.getStopButton().setDisable(true);
         view.getPauseButton().setDisable(true);
@@ -163,8 +176,10 @@ public class Controller {
                     "\nAlbino Rabbits: " + model.getAlCount() +
                     "\nClassic chance: " + model.getCrChance() +
                     "\nClassic delay: " + model.getCrTime() +
+                    "\nClassic lifetime: " +model.getCrLifeTime() +
                     "\nAlbino chance: " + model.getAlChance() +
-                    "\nAlbino delay:" + model.getAlTime());
+                    "\nAlbino delay: " + model.getAlTime() +
+                    "\nAlbino lifetime: " + model.getAlLifeTime());
             Optional<ButtonType> option = view.getStopSimulation().showAndWait();
             if (option.get() == ButtonType.OK) {
                 stopLogic();
@@ -184,6 +199,7 @@ public class Controller {
         model.getRabbitsVector().clear();
         model.resetStats();
         updateStats();
+        updateTime();
         view.getStopButton().setDisable(true);
         view.getStartButton().setDisable(false);
         view.getPauseButton().setDisable(true);
@@ -197,6 +213,7 @@ public class Controller {
     private void showStatsLogic() {
         model.setStatsVisible(!model.isStatsVisible());
         view.getRabbitCount().setVisible(model.isStatsVisible());
+        view.getTimeText().setVisible(!model.isStatsVisible());
         if (model.isStatsVisible())
             view.getShowStats().fire();
         else
@@ -223,21 +240,28 @@ public class Controller {
     }
 
 
+    private void updateTime(){
+        view.getTimeText().setFont(Font.font("Cascadia Code", 17));
+        view.getTimeText().setText("Time: " + model.gettTick());
+    }
+
     private void updateStats() {
-        view.getRabbitCount().setFill(Color.web("669933"));
         view.getRabbitCount().setText("Time: " + model.gettTick() +
                 "\nClassic Rabbits: " + model.getCrCount() +
                 "\nAlbino Rabbits: " + model.getAlCount() +
                 "\nClassic chance: " + model.getCrChance() +
-                "\nClassic delay: " + model.getCrTime() +
+                "\nClassic lifeTime: " + model.getCrLifeTime() +
+                "\nClassic birthDelay: " + model.getCrTime() +
                 "\nAlbino chance: " + model.getAlChance() +
-                "\nAlbino delay:" + model.getAlTime());
+                "\nAlbino lifeTime: " + model.getAlLifeTime() +
+                "\nAlbino birthDelay: " + model.getAlTime());
     }
 
     private void radButtonHideStatsLogic() {
         view.getHideStats().setOnAction(ActionEvent -> {
             model.setStatsVisible(false);
             view.getRabbitCount().setVisible(model.isStatsVisible());
+            view.getTimeText().setVisible(!model.isStatsVisible());
         });
     }
 
@@ -245,7 +269,9 @@ public class Controller {
         view.getShowStats().setOnAction(ActionEvent -> {
             model.setStatsVisible(true);
             view.getRabbitCount().setVisible(model.isStatsVisible());
+            view.getTimeText().setVisible(!model.isStatsVisible());
             updateStats();
+            updateTime();
         });
     }
 
@@ -393,8 +419,8 @@ public class Controller {
 
     private void removeRabbit(Rabbit rabbit) {
         rabbit.delete(view.getRoot());
-        model.getRabbitsIdSet().remove(rabbit.ID);
-        model.getRabbitsLifeTimeMap().remove(rabbit.ID);
+        model.getRabbitsIdSet().remove(rabbit.getID());
+        model.getRabbitsLifeTimeMap().remove(rabbit.getID());
         model.getRabbitsVector().remove(rabbit);
 
         if (rabbit instanceof CommonRabbit) {
@@ -449,5 +475,19 @@ public class Controller {
         view.getTextFieldCrLifeTime().setDisable(!isWorking);
         view.getSettingsCrLifeTimeText().setDisable(!isWorking);
 
+    }
+
+    private void startAIThreads() {
+        commonRabbitAI.start();
+    }
+
+    private void pauseMovement() {
+        commonRabbitAI.pause();
+    }
+
+    private void startMovement() {
+        if(view.getStartButton().isDisabled()) {
+            commonRabbitAI.unpause();
+        }
     }
 }
