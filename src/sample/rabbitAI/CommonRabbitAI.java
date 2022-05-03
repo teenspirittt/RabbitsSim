@@ -40,7 +40,6 @@ public class CommonRabbitAI extends BaseAI {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -48,96 +47,17 @@ public class CommonRabbitAI extends BaseAI {
     public void move(CommonRabbit rabbit) {
         Random random = new Random();
 
-        int checkX = 0;
-        int checkY = 0;
-
-
-        if (rabbit.getDestX() == rabbit.getPosX() && rabbit.getDestY() < rabbit.getPosY()) {
-            checkX = rabbit.getPosX();
-            checkY = (int) (rabbit.getPosY() - rabbit.getDestY() * rabbit.rabbitSpeed);
-        }
-
-        if (rabbit.getDestX() < rabbit.getPosX() && rabbit.getDestY() < rabbit.getPosY()){
-            checkX = (int) (rabbit.getPosX() - rabbit.getDestX() * rabbit.rabbitSpeed);
-            checkY = (int) (rabbit.getPosY() - rabbit.getDestY() * rabbit.rabbitSpeed);
-        }
-
-        if (rabbit.getDestX() < rabbit.getPosX() && rabbit.getDestY() == rabbit.getPosY()){
-            checkX = (int) (rabbit.getPosX() - rabbit.getDestX() * rabbit.rabbitSpeed);
-            checkY = rabbit.getPosY();
-        }
-
-        if (rabbit.getDestX() < rabbit.getPosX() && rabbit.getDestY() > rabbit.getPosY()){
-            checkX = (int) (rabbit.getPosX() - rabbit.getDestX() * rabbit.rabbitSpeed);
-            checkY = (int) (rabbit.getPosY() + rabbit.getDestY() * rabbit.rabbitSpeed);
-        }
-
-        if (rabbit.getDestX() == rabbit.getPosX() && rabbit.getDestY() > rabbit.getPosY()){
-            checkX = rabbit.getPosX();
-            checkY = (int) (rabbit.getPosY() + rabbit.getDestY() * rabbit.rabbitSpeed);
-        }
-
-        if (rabbit.getDestX() > rabbit.getPosX() && rabbit.getDestY() > rabbit.getPosY()){
-            checkX = (int) (rabbit.getPosX() + rabbit.getDestX() * rabbit.rabbitSpeed);
-            checkY = (int) (rabbit.getPosY() + rabbit.getDestY() * rabbit.rabbitSpeed);
-        }
-
-        if (rabbit.getDestX() > rabbit.getPosX() && rabbit.getDestY() == rabbit.getPosY()){
-            checkX = (int) (rabbit.getPosX() + rabbit.getDestX() * rabbit.rabbitSpeed);
-            checkY = rabbit.getPosY();
-        }
-
-        if (rabbit.getDestX() > rabbit.getPosX() && rabbit.getDestY() < rabbit.getPosY()){
-            checkX = (int) (rabbit.getPosX() + rabbit.getDestX() * rabbit.rabbitSpeed);
-            checkY = (int) (rabbit.getPosY() - rabbit.getDestY() * rabbit.rabbitSpeed);
-        }
-
-        if (checkX > 98 && checkX < 941) {
-            rabbit.setPosX(checkX);
-
-        } else {
+        if ((rabbit.getPosX() >= rabbit.getDestX() - 20 && rabbit.getPosX() <= rabbit.getDestX() + 20) &&
+                (rabbit.getPosY() >= rabbit.getDestY() - 10 && rabbit.getPosY() <= rabbit.getDestY() + 10)) {
+            rabbit.setDestX(random.nextInt(1280 - 339));
             rabbit.setDestY(20 + random.nextInt(720 - 77 - 20));
-            rabbit.setDestX(random.nextInt(1024 - 339));
-        }
-
-        if (checkY > 75 && checkY < 650) {
-            rabbit.setPosY(checkY);
         } else {
-            rabbit.setDestY(20 + random.nextInt(720 - 77 - 20));
-            rabbit.setDestX(random.nextInt(1024 - 339));
+            double dx = (double) (rabbit.getDestX() - rabbit.getPosX()) / 10;
+            double dy = (double) (rabbit.getDestY() - rabbit.getPosY()) / 10;
+            rabbit.setPosX((float) (rabbit.getPosX() + dx * rabbit.rabbitSpeed));
+            rabbit.setPosY((float) (rabbit.getPosY() + dy * rabbit.rabbitSpeed));
+            rabbit.moveImage();
         }
-
-        rabbit.moveImage();
     }
 
 }
-
-
-
-
-/* Random random = new Random();
-
- */
-
-
-/*public void addVector(myVector newWay, float speed,CommonRabbit rabbit) {
-        myVector rabbitVec = new myVector();
-        myVector newVec = new myVector();
-
-        rabbitVec.x = rabbit.way.x * rabbit.rabbitSpeed;
-        rabbitVec.y = rabbit.way.y * rabbit.rabbitSpeed;
-
-        newVec.x = rabbit.way.x * speed;
-        newVec.y = rabbit.way.y * speed;
-
-        rabbit.way.x = rabbitVec.x + newVec.x;
-        rabbit.way.y = rabbitVec.y + newVec.y;
-
-        normalize(rabbit);
-    }
-
-    private void normalize(CommonRabbit rabbit) {
-        rabbit.rabbitSpeed = (int)Math.sqrt(rabbit.way.x * rabbit.way.x + rabbit.way.y * rabbit.way.y);
-        rabbit.way.x *= 1.0 /rabbit.rabbitSpeed;
-        rabbit.way.x *= 1.0 /rabbit.rabbitSpeed;
-    }*/

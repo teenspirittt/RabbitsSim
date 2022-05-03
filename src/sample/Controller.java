@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.paint.Color;
 
 
 import java.util.Optional;
@@ -20,11 +19,11 @@ public class Controller {
     private static Controller instance;
 
 
-
     Model model = Model.getInstance();
     Habitat view;
 
     final CommonRabbitAI commonRabbitAI = new CommonRabbitAI(model.getRabbitsVector());
+    final AlbinoRabbitAI albinoRabbitAI = new AlbinoRabbitAI(model.getRabbitsVector());
 
     private final Random random = new Random();
     private Timer timer = new Timer();
@@ -176,7 +175,7 @@ public class Controller {
                     "\nAlbino Rabbits: " + model.getAlCount() +
                     "\nClassic chance: " + model.getCrChance() +
                     "\nClassic delay: " + model.getCrTime() +
-                    "\nClassic lifetime: " +model.getCrLifeTime() +
+                    "\nClassic lifetime: " + model.getCrLifeTime() +
                     "\nAlbino chance: " + model.getAlChance() +
                     "\nAlbino delay: " + model.getAlTime() +
                     "\nAlbino lifetime: " + model.getAlLifeTime());
@@ -222,25 +221,19 @@ public class Controller {
 
 
     private void buttonStartLogic() {
-        view.getStartButton().setOnAction(ActionEvent -> {
-            startLogic();
-        });
+        view.getStartButton().setOnAction(ActionEvent -> startLogic());
     }
 
     private void buttonPauseLogic() {
-        view.getPauseButton().setOnAction(ActionEvent -> {
-            pauseLogic();
-        });
+        view.getPauseButton().setOnAction(ActionEvent -> pauseLogic());
     }
 
     private void buttonStopLogic() {
-        view.getStopButton().setOnAction(ActionEvent -> {
-            stopWithInfoLogic();
-        });
+        view.getStopButton().setOnAction(ActionEvent -> stopWithInfoLogic());
     }
 
 
-    private void updateTime(){
+    private void updateTime() {
         view.getTimeText().setFont(Font.font("Cascadia Code", 17));
         view.getTimeText().setText("Time: " + model.gettTick());
     }
@@ -357,31 +350,21 @@ public class Controller {
     }
 
     private void fileMenuLogic() {
-        view.getExitMenuItem().setOnAction(ActionEvent -> {
-            System.exit(0);
-        });
+        view.getExitMenuItem().setOnAction(ActionEvent -> System.exit(0));
     }
 
     private void runMenuLogic() {
         view.getStartMenuItem().setAccelerator(KeyCombination.keyCombination("B"));
-        view.getStartMenuItem().setOnAction(ActionEvent -> {
-            startLogic();
-        });
+        view.getStartMenuItem().setOnAction(ActionEvent -> startLogic());
         view.getPauseMenuItem().setAccelerator(KeyCombination.keyCombination("E"));
-        view.getPauseMenuItem().setOnAction(ActionEvent -> {
-            pauseLogic();
-        });
+        view.getPauseMenuItem().setOnAction(ActionEvent -> pauseLogic());
         view.getStopMenuItem().setAccelerator(KeyCombination.keyCombination("S"));
-        view.getStopMenuItem().setOnAction(ActionEvent -> {
-            stopWithInfoLogic();
-        });
+        view.getStopMenuItem().setOnAction(ActionEvent -> stopWithInfoLogic());
     }
 
     private void viewMenuLogic() {
         view.getHideShowMenuItem().setAccelerator(KeyCombination.keyCombination("T"));
-        view.getHideShowMenuItem().setOnAction(ActionEvent -> {
-            showStatsLogic();
-        });
+        view.getHideShowMenuItem().setOnAction(ActionEvent -> showStatsLogic());
 
         view.getShowAliveRabbits().setOnAction(ActionEvent0 -> {
             String str = "";
@@ -396,18 +379,12 @@ public class Controller {
             }
             view.getInfoAliveRabbits().setContentText("");
             view.getInfoAliveRabbits().setContentText(str);
-            view.getInfoAliveRabbits().setOnShowing(ActionEvent1 -> {
-                pauseLogic();
-            });
-            view.getInfoAliveRabbits().setOnCloseRequest(ActionEvent2 -> {
-                startLogic();
-            });
+            view.getInfoAliveRabbits().setOnShowing(ActionEvent1 -> pauseLogic());
+            view.getInfoAliveRabbits().setOnCloseRequest(ActionEvent2 -> startLogic());
             view.getInfoAliveRabbits().show();
         });
 
-        view.getAdvancedMenuItem().setOnAction(ActionEvent3 -> {
-            advancedModeLogic(model.isAdvancedMode());
-        });
+        view.getAdvancedMenuItem().setOnAction(ActionEvent3 -> advancedModeLogic(model.isAdvancedMode()));
 
 
     }
@@ -479,15 +456,19 @@ public class Controller {
 
     private void startAIThreads() {
         commonRabbitAI.start();
+        albinoRabbitAI.start();
     }
 
     private void pauseMovement() {
         commonRabbitAI.pause();
+        albinoRabbitAI.pause();
+
     }
 
     private void startMovement() {
-        if(view.getStartButton().isDisabled()) {
+        if (view.getStartButton().isDisabled()) {
             commonRabbitAI.unpause();
+            albinoRabbitAI.unpause();
         }
     }
 }

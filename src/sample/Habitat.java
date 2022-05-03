@@ -33,11 +33,11 @@ public class Habitat {
     private final TextField textFieldCrDelay = new TextField();
     private final TextField textFieldAlLifeTime = new TextField();
     private final TextField textFieldCrLifeTime = new TextField();
-    private final ComboBox<Integer> alChanceBox = new ComboBox<Integer>();
-    private final ComboBox<Integer> crChanceBox = new ComboBox<Integer>();
+    private final ComboBox<Integer> alChanceBox = new ComboBox<>();
+    private final ComboBox<Integer> crChanceBox = new ComboBox<>();
     private final Group root = new Group();
     private final Stage stage = new Stage();
-    private Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878")); // Medium green
+    private final Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878")); // Medium green
     private final MenuBar menuBar = new MenuBar();
     private final Menu runMenu = new Menu("Run");
     private final Menu editMenu = new Menu("Edit");
@@ -53,23 +53,12 @@ public class Habitat {
     private final MenuItem helpItem = new MenuItem("? Help");
     private final MenuItem advancedMenuItem = new MenuItem("Advanced Mode");
 
-    private Text rabbitCount = new Text();
-    private Text timeText = new Text();
+    private final Text rabbitCount = new Text();
+    private final Text timeText = new Text();
 
-    public static void setInstance(Habitat instance) {
-        Habitat.instance = instance;
-    }
-
-    public ToggleGroup getRadioGroup() {
-        return radioGroup;
-    }
 
     public Text getTimeText() {
         return timeText;
-    }
-
-    public void setTimeText(Text timeText) {
-        this.timeText = timeText;
     }
 
     private final Text settingsCrRabbitText = new Text("COMMON RABBIT");
@@ -143,10 +132,6 @@ public class Habitat {
         return scene;
     }
 
-    public Stage getStage() {
-        return stage;
-    }
-
     public Text getRabbitCount() {
         return rabbitCount;
     }
@@ -157,34 +142,6 @@ public class Habitat {
 
     public int getSceneWidth() {
         return sceneWidth;
-    }
-
-    public Menu getEditMenu() {
-        return editMenu;
-    }
-
-    public Menu getFileMenu() {
-        return fileMenu;
-    }
-
-    public Menu getRunMenu() {
-        return runMenu;
-    }
-
-    public MenuBar getMenuBar() {
-        return menuBar;
-    }
-
-    public Menu getViewMenu() {
-        return viewMenu;
-    }
-
-    public Menu getHelpMenu() {
-        return helpMenu;
-    }
-
-    public MenuItem getHelpItem() {
-        return helpItem;
     }
 
     public MenuItem getShowAliveRabbits() {
@@ -255,24 +212,8 @@ public class Habitat {
         return infoAliveRabbits;
     }
 
-    public Alert getIncorrectRange() {
-        return incorrectRange;
-    }
-
     public Alert getStopSimulation() {
         return stopSimulation;
-    }
-
-    public ObservableList<Integer> getChanceList() {
-        return chanceList;
-    }
-
-    public void setRabbitCount(Text rabbitCount) {
-        this.rabbitCount = rabbitCount;
-    }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
     }
 
     public void initStats() {

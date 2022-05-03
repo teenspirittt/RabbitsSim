@@ -1,23 +1,18 @@
 package sample.rabbit;
 
 import javafx.scene.Group;
-import javafx.scene.image.ImageView;
 import sample.IBehaviour;
 
 public abstract class Rabbit extends Group implements IBehaviour {
 
-    private static ImageView imageView = new ImageView();
     protected int lifeTime;
     protected int birthTime;
     protected int ID;
-    protected int posX;
-    protected int posY;
-    protected double speed;
+    protected float posX;
+    protected float posY;
     protected int birthX;
     protected int birthY;
-    protected int startX;
-    protected int startY;
-    protected int destX = 20;
+    protected int destX = 400;
     protected int destY = 400;
 
 
@@ -53,24 +48,6 @@ public abstract class Rabbit extends Group implements IBehaviour {
         this.birthY = birthY;
     }
 
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
-    public double getDirectionChangeTime() {
-        return directionChangeTime;
-    }
-
-    public void setDirectionChangeTime(double directionChangeTime) {
-        this.directionChangeTime = directionChangeTime;
-    }
-
-    public double directionChangeTime;
-
     public int getLifeTime() {
         return lifeTime;
     }
@@ -95,19 +72,19 @@ public abstract class Rabbit extends Group implements IBehaviour {
         this.ID = ID;
     }
 
-    public int getPosX() {
+    public float getPosX() {
         return posX;
     }
 
-    public void setPosX(int posX) {
+    public void setPosX(float posX) {
         this.posX = posX;
     }
 
-    public int getPosY() {
+    public float getPosY() {
         return posY;
     }
 
-    public void setPosY(int posY) {
+    public void setPosY(float posY) {
         this.posY = posY;
     }
 
@@ -118,8 +95,6 @@ public abstract class Rabbit extends Group implements IBehaviour {
     public abstract void spawn(int x, int y, Group root);
 
     public abstract void delete(Group root);
-
-
 
 
 }

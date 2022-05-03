@@ -3,7 +3,10 @@ package sample.rabbit;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 
+
 public class AlbinoRabbit extends Rabbit {
+    public double rabbitSpeed = 2;
+
 
     private final ImageView imageView = new ImageView("resources/albino.png");
 
@@ -23,14 +26,8 @@ public class AlbinoRabbit extends Rabbit {
         root.getChildren().remove(imageView);
     }
 
-
     @Override
-    public void move(Rabbit rabbit) {
-
-    }
-
-
     public void moveImage() {
-
+        imageView.setX(posX);
     }
 }
