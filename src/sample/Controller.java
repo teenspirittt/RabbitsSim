@@ -42,7 +42,7 @@ public class Controller {
         this.view = view;
         keyBinds();
         startAIThreads();
-        advancedModeLogic(model.isAdvancedMode());
+        threadEditModeLogic(model.isAdvancedMode());
 
         buttonPauseLogic();
         buttonStartLogic();
@@ -55,6 +55,11 @@ public class Controller {
         textAreaCrDelayLogic();
         textAreaAlLifeTimeLogic();
         textAreaCrLifeTimeLogic();
+        stopAlMoveCheckBoxLogic();
+        stopCrMoveCheckBoxLogic();
+        alThreadPriorityComBoxLogic();
+        crThreadPriorityComBoxLogic();
+        mainThreadPriorityComBoxLogic();
         fileMenuLogic();
         runMenuLogic();
         viewMenuLogic();
@@ -132,7 +137,7 @@ public class Controller {
                 case E -> pauseLogic();
                 case T -> showStatsLogic();
                 case S -> stopWithInfoLogic();
-                case I -> advancedModeLogic(model.isAdvancedMode());
+                case I -> threadEditModeLogic(model.isAdvancedMode());
             }
         });
     }
@@ -140,6 +145,8 @@ public class Controller {
     private void startLogic() {
         if (!model.isTimerWorking()) {
             timer = startTimer();
+            view.getStopMoveAlCheckBox().setDisable(false);
+            view.getStopMoveCrCheckBox().setDisable(false);
             view.getStartButton().setDisable(true);
             view.getStopButton().setDisable(false);
             view.getPauseButton().setDisable(false);
@@ -149,13 +156,17 @@ public class Controller {
             model.setTimerWorking(true);
             view.getPauseButton().setVisible(true);
             view.getStartButton().setVisible(false);
-            startMovement();
+            startAlMovement();
+            startCrMovement();
         }
     }
 
     private void pauseLogic() {
         timer.cancel();
-        pauseMovement();
+        pauseAlMovement();
+        pauseCrMovement();
+        view.getStopMoveAlCheckBox().setDisable(true);
+        view.getStopMoveCrCheckBox().setDisable(true);
         view.getStartButton().setDisable(false);
         view.getStopButton().setDisable(true);
         view.getPauseButton().setDisable(true);
@@ -194,6 +205,10 @@ public class Controller {
         for (Rabbit rabbit : model.getRabbitsVector()) {
             rabbit.delete(view.getRoot());
         }
+        view.getStopMoveAlCheckBox().setDisable(true);
+        view.getStopMoveCrCheckBox().setDisable(true);
+        view.getStopMoveCrCheckBox().setSelected(false);
+        view.getStopMoveAlCheckBox().setSelected(false);
         model.setTimerWorking(false);
         model.getRabbitsVector().clear();
         model.resetStats();
@@ -268,6 +283,18 @@ public class Controller {
         });
     }
 
+    private void stopAlMoveCheckBoxLogic() {
+        view.getStopMoveAlCheckBox().setOnAction(ActionEvent ->{
+            stopAlMovementLogic();
+        });
+    }
+
+    private void stopCrMoveCheckBoxLogic() {
+        view.getStopMoveCrCheckBox().setOnAction(ActionEvent ->{
+            stopCrMovementLogic();
+        });
+    }
+
     private void comBoxAlbinoLogic() {
         view.getAlChanceBox().setValue(model.getAlChance());
         view.getAlChanceBox().setOnAction(ActionEvent -> {
@@ -282,6 +309,30 @@ public class Controller {
             model.setCrChance(view.getCrChanceBox().getValue());
             updateStats();
         });
+    }
+
+    private void alThreadPriorityComBoxLogic() {
+        view.getAlThreadPriorityComBox().setValue(model.getAlThreadPriority());
+        view.getAlThreadPriorityComBox().setOnAction(ActionEvent -> {
+            model.setAlThreadPriority(view.getAlThreadPriorityComBox().getValue());
+        });
+        albinoRabbitAI.setPriority(model.getAlThreadPriority());
+    }
+
+    private void crThreadPriorityComBoxLogic() {
+        view.getCrThreadPriorityComBox().setValue(model.getCrThreadPriority());
+        view.getCrThreadPriorityComBox().setOnAction(ActionEvent -> {
+            model.setCrThreadPriority(view.getCrThreadPriorityComBox().getValue());
+        });
+        commonRabbitAI.setPriority(model.getCrThreadPriority());
+    }
+
+    private void mainThreadPriorityComBoxLogic() {
+        view.getMainThreadPriorityComBox().setValue(model.getMainThreadPriority());
+        view.getMainThreadPriorityComBox().setOnAction(ActionEvent -> {
+            model.setMainThreadPriority(view.getMainThreadPriorityComBox().getValue());
+        });
+        Thread.currentThread().setPriority(model.getMainThreadPriority());
     }
 
     private void textAreaAlDelayLogic() {
@@ -383,16 +434,12 @@ public class Controller {
             view.getInfoAliveRabbits().setOnCloseRequest(ActionEvent2 -> startLogic());
             view.getInfoAliveRabbits().show();
         });
-
-        view.getAdvancedMenuItem().setOnAction(ActionEvent3 -> advancedModeLogic(model.isAdvancedMode()));
-
-
+        view.getThreadEditMenuItem().setOnAction(ActionEvent3 -> threadEditModeLogic(model.isAdvancedMode()));
     }
 
     private void helpMenuLogic() {
 
     }
-
 
     private void removeRabbit(Rabbit rabbit) {
         rabbit.delete(view.getRoot());
@@ -417,41 +464,19 @@ public class Controller {
         }
     }
 
-    private void advancedModeLogic(boolean isWorking) {
+    private void threadEditModeLogic(boolean isWorking) {
         model.setAdvancedMode(!model.isAdvancedMode());
-        view.getSettingsAlRabbitText().setVisible(isWorking);
-        view.getSettingsAlDelayText().setVisible(isWorking);
-        view.getSettingsAlSpawnChanceText().setVisible(isWorking);
-        view.getSettingsAlLifeTimeText().setVisible(isWorking);
-        view.getAlChanceBox().setVisible(isWorking);
-        view.getTextFieldAlDelay().setVisible(isWorking);
-        view.getTextFieldAlLifeTime().setVisible(isWorking);
 
-        view.getSettingsAlRabbitText().setDisable(!isWorking);
-        view.getSettingsAlDelayText().setDisable(!isWorking);
-        view.getSettingsAlSpawnChanceText().setDisable(!isWorking);
-        view.getSettingsAlLifeTimeText().setDisable(!isWorking);
-        view.getAlChanceBox().setDisable(!isWorking);
-        view.getTextFieldAlDelay().setDisable(!isWorking);
-        view.getTextFieldAlLifeTime().setDisable(!isWorking);
-
-
-        view.getSettingsCrRabbitText().setVisible(isWorking);
-        view.getSettingsCrDelayText().setVisible(isWorking);
-        view.getSettingsCrSpawnChanceText().setVisible(isWorking);
-        view.getCrChanceBox().setVisible(isWorking);
-        view.getTextFieldCrDelay().setVisible(isWorking);
-        view.getTextFieldCrLifeTime().setVisible(isWorking);
-        view.getSettingsCrLifeTimeText().setVisible(isWorking);
-
-        view.getSettingsCrRabbitText().setDisable(!isWorking);
-        view.getSettingsCrDelayText().setDisable(!isWorking);
-        view.getSettingsCrSpawnChanceText().setDisable(!isWorking);
-        view.getCrChanceBox().setDisable(!isWorking);
-        view.getTextFieldCrDelay().setDisable(!isWorking);
-        view.getTextFieldCrLifeTime().setDisable(!isWorking);
-        view.getSettingsCrLifeTimeText().setDisable(!isWorking);
-
+        view.getStopMoveAlText().setVisible(!isWorking);
+        view.getStopMoveCrText().setVisible(!isWorking);
+        view.getAlThreadPriorityComBox().setVisible(!isWorking);
+        view.getCrThreadPriorityComBox().setVisible(!isWorking);
+        view.getMainThreadPriorityComBox().setVisible(!isWorking);
+        view.getStopMoveAlCheckBox().setVisible(!isWorking);
+        view.getStopMoveCrCheckBox().setVisible(!isWorking);
+        view.getThreadPriorityAlText().setVisible(!isWorking);
+        view.getThreadPriorityCrText().setVisible(!isWorking);
+        view.getThreadPriorityMainText().setVisible(!isWorking);
     }
 
     private void startAIThreads() {
@@ -459,16 +484,35 @@ public class Controller {
         albinoRabbitAI.start();
     }
 
-    private void pauseMovement() {
-        commonRabbitAI.pause();
+    private void pauseAlMovement() {
         albinoRabbitAI.pause();
-
     }
 
-    private void startMovement() {
-        if (view.getStartButton().isDisabled()) {
-            commonRabbitAI.unpause();
+    private void pauseCrMovement() {
+        commonRabbitAI.pause();
+    }
+
+    private void startAlMovement() {
+        if (view.getStartButton().isDisabled())
             albinoRabbitAI.unpause();
-        }
+    }
+
+    private void startCrMovement() {
+        if (view.getStartButton().isDisabled())
+            commonRabbitAI.unpause();
+    }
+
+    private void stopAlMovementLogic() {
+        if (albinoRabbitAI.isPaused())
+            startAlMovement();
+        else
+            pauseAlMovement();
+    }
+
+    private void stopCrMovementLogic() {
+        if (commonRabbitAI.isPaused())
+            startCrMovement();
+        else
+            pauseCrMovement();
     }
 }

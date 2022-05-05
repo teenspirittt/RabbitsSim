@@ -25,6 +25,8 @@ public class Habitat {
     private final ToggleGroup radioGroup = new ToggleGroup();
     private final RadioButton showStats = new RadioButton("Show stats");
     private final RadioButton hideStats = new RadioButton("Hide stats");
+    private final CheckBox stopMoveAlCheckBox = new CheckBox();
+    private final CheckBox stopMoveCrCheckBox = new CheckBox();
     private final Alert incorrectInput = new Alert(Alert.AlertType.WARNING);
     private final Alert incorrectRange = new Alert(Alert.AlertType.WARNING);
     private final Alert stopSimulation = new Alert(Alert.AlertType.CONFIRMATION);
@@ -33,8 +35,12 @@ public class Habitat {
     private final TextField textFieldCrDelay = new TextField();
     private final TextField textFieldAlLifeTime = new TextField();
     private final TextField textFieldCrLifeTime = new TextField();
+
     private final ComboBox<Integer> alChanceBox = new ComboBox<>();
     private final ComboBox<Integer> crChanceBox = new ComboBox<>();
+    private final ComboBox<Integer> alThreadPriorityComBox = new ComboBox<>();
+    private final ComboBox<Integer> crThreadPriorityComBox = new ComboBox<>();
+    private final ComboBox<Integer> mainThreadPriorityComBox = new ComboBox<>();
     private final Group root = new Group();
     private final Stage stage = new Stage();
     private final Scene scene = new Scene(root, sceneWidth, sceneHeight, Color.web("20790878")); // Medium green
@@ -51,7 +57,7 @@ public class Habitat {
     private final MenuItem hideShowMenuItem = new MenuItem("Hide/Show Statistic");
     private final MenuItem showAliveRabbits = new MenuItem("Show Alive Rabbits");
     private final MenuItem helpItem = new MenuItem("? Help");
-    private final MenuItem advancedMenuItem = new MenuItem("Advanced Mode");
+    private final MenuItem threadEditMenuItem = new MenuItem("Thread Edit Mode");
 
     private final Text rabbitCount = new Text();
     private final Text timeText = new Text();
@@ -70,7 +76,13 @@ public class Habitat {
     private final Text settingsAlSpawnChanceText = new Text("Spawn Chance");
     private final Text settingsAlDelayText = new Text("Delay");
     private final Text settingsAlLifeTimeText = new Text("LifeTime");
+    private final Text stopMoveAlText = new Text("Stop movement for Albino");
+    private final Text stopMoveCrText = new Text("Stop movement for Common");
+    private final Text threadPriorityAlText = new Text("ART");
+    private final Text threadPriorityCrText = new Text("CRT");
+    private final Text threadPriorityMainText = new Text("MT");
     private final ObservableList<Integer> chanceList = FXCollections.observableArrayList(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0);
+    private final ObservableList<Integer> threadPriorityList = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
 
     static synchronized Habitat getInstance() {
@@ -124,6 +136,38 @@ public class Habitat {
         return textFieldCrLifeTime;
     }
 
+    public static void setInstance(Habitat instance) {
+        Habitat.instance = instance;
+    }
+
+    public ComboBox<Integer> getAlThreadPriorityComBox() {
+        return alThreadPriorityComBox;
+    }
+
+    public ComboBox<Integer> getCrThreadPriorityComBox() {
+        return crThreadPriorityComBox;
+    }
+
+    public ComboBox<Integer> getMainThreadPriorityComBox() {
+        return mainThreadPriorityComBox;
+    }
+
+    public ToggleGroup getRadioGroup() {
+        return radioGroup;
+    }
+
+    public Text getThreadPriorityAlText() {
+        return threadPriorityAlText;
+    }
+
+    public Text getThreadPriorityCrText() {
+        return threadPriorityCrText;
+    }
+
+    public Text getThreadPriorityMainText() {
+        return threadPriorityMainText;
+    }
+
     public Group getRoot() {
         return root;
     }
@@ -168,8 +212,8 @@ public class Habitat {
         return hideShowMenuItem;
     }
 
-    public MenuItem getAdvancedMenuItem() {
-        return advancedMenuItem;
+    public MenuItem getThreadEditMenuItem() {
+        return threadEditMenuItem;
     }
 
     public Alert getIncorrectInput() {
@@ -196,6 +240,14 @@ public class Habitat {
         return settingsCrDelayText;
     }
 
+    public Text getStopMoveAlText() {
+        return stopMoveAlText;
+    }
+
+    public Text getStopMoveCrText() {
+        return stopMoveCrText;
+    }
+
     public Text getSettingsCrLifeTimeText() {
         return settingsCrLifeTimeText;
     }
@@ -214,6 +266,14 @@ public class Habitat {
 
     public Alert getStopSimulation() {
         return stopSimulation;
+    }
+
+    public CheckBox getStopMoveAlCheckBox() {
+        return stopMoveAlCheckBox;
+    }
+
+    public CheckBox getStopMoveCrCheckBox() {
+        return stopMoveCrCheckBox;
     }
 
     public void initStats() {
@@ -265,6 +325,11 @@ public class Habitat {
         settingsMenuTextInit();
         alertsInit();
         initTimeText();
+        stopMoveAlCheckBoxInit();
+        stopMoveCrCheckBoxInit();
+        crThreadPriorityComBoxInit();
+        mainThreadPriorityComBoxInit();
+        alThreadPriorityComBoxInit();
         menuInit();
 
         initStats();
@@ -277,9 +342,9 @@ public class Habitat {
 
     private void buttonStartInit() {
         startButton.setFont(Font.font("Cascadia Code", 38));
-        startButton.setPrefSize(203, 84);
+        startButton.setPrefSize(203, 75);
         startButton.setLayoutX(1058);
-        startButton.setLayoutY(591);
+        startButton.setLayoutY(600);
         startButton.setDisable(false);
         root.getChildren().add(startButton);
     }
@@ -295,9 +360,9 @@ public class Habitat {
 
     private void buttonPauseInit() {
         pauseButton.setFont(Font.font("Cascadia Code", 38));
-        pauseButton.setPrefSize(203, 84);
+        pauseButton.setPrefSize(203, 75);
         pauseButton.setLayoutX(1058);
-        pauseButton.setLayoutY(591);
+        pauseButton.setLayoutY(600);
         pauseButton.setDisable(false);
         pauseButton.setVisible(false);
         root.getChildren().add(pauseButton);
@@ -320,7 +385,7 @@ public class Habitat {
     private void alChanceComBoxInit() {
         alChanceBox.setItems(chanceList);
         alChanceBox.setLayoutX(1172);
-        alChanceBox.setLayoutY(386);
+        alChanceBox.setLayoutY(376);
         alChanceBox.setPrefHeight(37);
         alChanceBox.setPrefWidth(89);
         alChanceBox.setVisibleRowCount(3);
@@ -337,9 +402,59 @@ public class Habitat {
         root.getChildren().add(crChanceBox);
     }
 
+    private void crThreadPriorityComBoxInit() {
+        crThreadPriorityComBox.setVisible(false);
+        crThreadPriorityComBox.setLayoutX(1194);
+        crThreadPriorityComBox.setLayoutY(550);
+        crThreadPriorityComBox.setPrefWidth(67);
+        crThreadPriorityComBox.setPrefHeight(20);
+        crThreadPriorityComBox.setItems(threadPriorityList);
+        crThreadPriorityComBox.setVisibleRowCount(1);
+        root.getChildren().add(crThreadPriorityComBox);
+    }
+
+    private void alThreadPriorityComBoxInit() {
+        alThreadPriorityComBox.setVisible(false);
+        alThreadPriorityComBox.setLayoutX(1126);
+        alThreadPriorityComBox.setLayoutY(550);
+        alThreadPriorityComBox.setPrefWidth(67);
+        alThreadPriorityComBox.setPrefHeight(20);
+        alThreadPriorityComBox.setItems(threadPriorityList);
+        alThreadPriorityComBox.setVisibleRowCount(1);
+        root.getChildren().add(alThreadPriorityComBox);
+    }
+
+    private void mainThreadPriorityComBoxInit() {
+        mainThreadPriorityComBox.setVisible(false);
+        mainThreadPriorityComBox.setLayoutX(1058);
+        mainThreadPriorityComBox.setLayoutY(550);
+        mainThreadPriorityComBox.setPrefWidth(67);
+        mainThreadPriorityComBox.setPrefHeight(20);
+        mainThreadPriorityComBox.setItems(threadPriorityList);
+        mainThreadPriorityComBox.setVisibleRowCount(1);
+        root.getChildren().add(mainThreadPriorityComBox);
+    }
+
+
+    private void stopMoveAlCheckBoxInit() {
+        stopMoveAlCheckBox.setLayoutX(1242);
+        stopMoveAlCheckBox.setLayoutY(527);
+        stopMoveAlCheckBox.setVisible(false);
+        stopMoveAlCheckBox.setDisable(true);
+        root.getChildren().add(stopMoveAlCheckBox);
+    }
+
+    private void stopMoveCrCheckBoxInit() {
+        stopMoveCrCheckBox.setLayoutX(1242);
+        stopMoveCrCheckBox.setLayoutY(502);
+        stopMoveCrCheckBox.setVisible(false);
+        stopMoveCrCheckBox.setDisable(true);
+        root.getChildren().add(stopMoveCrCheckBox);
+    }
+
     private void textAreaAlDelayInit() {
         textFieldAlDelay.setLayoutX(1172);
-        textFieldAlDelay.setLayoutY(423);
+        textFieldAlDelay.setLayoutY(413);
         textFieldAlDelay.setPrefHeight(37);
         textFieldAlDelay.setPrefWidth(89);
         root.getChildren().add(textFieldAlDelay);
@@ -355,7 +470,7 @@ public class Habitat {
 
     private void textFieldAlLifeTimeInit() {
         textFieldAlLifeTime.setLayoutX(1172);
-        textFieldAlLifeTime.setLayoutY(461);
+        textFieldAlLifeTime.setLayoutY(451);
         textFieldAlLifeTime.setPrefHeight(37);
         textFieldAlLifeTime.setPrefWidth(89);
         root.getChildren().add(textFieldAlLifeTime);
@@ -387,26 +502,47 @@ public class Habitat {
         settingsCrLifeTimeText.setLayoutX(1058);
         settingsCrLifeTimeText.setLayoutY(334);
 
-        // common rabbit albino rabbit
+        stopMoveCrText.setFont(Font.font("Cascadia Code", 12));
+        stopMoveCrText.setLayoutX(1058);
+        stopMoveCrText.setLayoutY(515);
+
+        threadPriorityCrText.setFont(Font.font("Cascadia Code", 12));
+        threadPriorityCrText.setLayoutX(1217);
+        threadPriorityCrText.setLayoutY(588);
+
+        // albino rabbit
         settingsAlDelayText.setFont(Font.font("Cascadia Code", 12));
         settingsAlDelayText.setLayoutX(1058);
-        settingsAlDelayText.setLayoutY(447);
+        settingsAlDelayText.setLayoutY(437);
 
         settingsAlRabbitText.setFont(Font.font("Cascadia Code", 12));
         settingsAlRabbitText.setLayoutX(1118);
-        settingsAlRabbitText.setLayoutY(382);
+        settingsAlRabbitText.setLayoutY(372);
 
         settingsAlSpawnChanceText.setFont(Font.font("Cascadia Code", 12));
         settingsAlSpawnChanceText.setLayoutX(1059);
-        settingsAlSpawnChanceText.setLayoutY(409);
+        settingsAlSpawnChanceText.setLayoutY(399);
 
         settingsAlLifeTimeText.setFont(Font.font("Cascadia Code", 12));
         settingsAlLifeTimeText.setLayoutX(1058);
-        settingsAlLifeTimeText.setLayoutY(484);
+        settingsAlLifeTimeText.setLayoutY(474);
 
+        stopMoveAlText.setFont(Font.font("Cascadia Code", 12));
+        stopMoveAlText.setLayoutX(1058);
+        stopMoveAlText.setLayoutY(540);
+
+        threadPriorityAlText.setFont(Font.font("Cascadia Code", 12));
+        threadPriorityAlText.setLayoutX(1150);
+        threadPriorityAlText.setLayoutY(588);
+
+        //main thread
+        threadPriorityMainText.setFont(Font.font("Cascadia Code", 12));
+        threadPriorityMainText.setLayoutX(1084);
+        threadPriorityMainText.setLayoutY(588);
 
         root.getChildren().addAll(settingsCrDelayText, settingsCrRabbitText, settingsCrSpawnChanceText,
-                settingsAlDelayText, settingsAlRabbitText, settingsAlSpawnChanceText, settingsAlLifeTimeText, settingsCrLifeTimeText);
+                settingsAlDelayText, settingsAlRabbitText, settingsAlSpawnChanceText, settingsAlLifeTimeText,
+                settingsCrLifeTimeText, stopMoveAlText, stopMoveCrText, threadPriorityAlText, threadPriorityCrText, threadPriorityMainText);
     }
 
     private void alertsInit() {
@@ -434,10 +570,11 @@ public class Habitat {
 
         fileMenu.getItems().add(exitMenuItem);
 
-        viewMenu.getItems().addAll(hideShowMenuItem, showAliveRabbits, advancedMenuItem);
+        viewMenu.getItems().addAll(hideShowMenuItem, showAliveRabbits, threadEditMenuItem);
 
         helpMenu.getItems().add(helpItem);
 
         root.getChildren().add(menuBar);
     }
 }
+

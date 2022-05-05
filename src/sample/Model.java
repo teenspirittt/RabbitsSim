@@ -15,6 +15,9 @@ public class Model {
     private int crTime = 2;
     private int alTime = 2;
     private int tTick = 0;
+    private int alThreadPriority = 5;
+    private int crThreadPriority = 5;
+    private int mainThreadPriority = 5;
     private boolean isTimerWorking = false;
     private boolean isStatsVisible = false;
     private boolean isAdvancedMode = true;
@@ -86,6 +89,29 @@ public class Model {
         return isAdvancedMode;
     }
 
+    public int getAlThreadPriority() {
+        return alThreadPriority;
+    }
+
+    public void setAlThreadPriority(int alThreadPriority) {
+        this.alThreadPriority = alThreadPriority;
+    }
+
+    public int getCrThreadPriority() {
+        return crThreadPriority;
+    }
+
+    public void setCrThreadPriority(int crThreadPriority) {
+        this.crThreadPriority = crThreadPriority;
+    }
+
+    public int getMainThreadPriority() {
+        return mainThreadPriority;
+    }
+
+    public void setMainThreadPriority(int mainThreadPriority) {
+        this.mainThreadPriority = mainThreadPriority;
+    }
 
     public void setAdvancedMode(boolean advancedMode) {
         isAdvancedMode = advancedMode;
