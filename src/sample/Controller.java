@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.Cursor;
 import sample.rabbitAI.*;
 import javafx.scene.text.Font;
 import sample.rabbit.*;
@@ -9,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 
 
+import java.awt.event.ActionEvent;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
