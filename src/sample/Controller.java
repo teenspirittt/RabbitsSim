@@ -11,6 +11,7 @@ import javafx.scene.input.KeyCombination;
 
 
 import java.awt.event.ActionEvent;
+import java.awt.font.FontRenderContext;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
@@ -22,11 +23,11 @@ public class Controller {
 
 
     Model model = Model.getInstance();
-    Habitat view;
+    Habitat view = Habitat.getInstance();
 
     final CommonRabbitAI commonRabbitAI = new CommonRabbitAI(model.getRabbitsVector());
     final AlbinoRabbitAI albinoRabbitAI = new AlbinoRabbitAI(model.getRabbitsVector());
-
+    TerminalController terminalController;
     private final Random random = new Random();
     private Timer timer = new Timer();
 
@@ -37,15 +38,12 @@ public class Controller {
         return instance;
     }
 
-    Controller() {
-    }
-
     public void initController(Habitat view) {
         this.view = view;
+        terminalController = TerminalController.getInstance();
         keyBinds();
         startAIThreads();
         threadEditModeLogic(model.isAdvancedMode());
-
         buttonPauseLogic();
         buttonStartLogic();
         buttonStopLogic();
@@ -66,6 +64,7 @@ public class Controller {
         runMenuLogic();
         viewMenuLogic();
         helpMenuLogic();
+        editMenuLogic();
     }
 
     public void update(int time) {
@@ -286,13 +285,13 @@ public class Controller {
     }
 
     private void stopAlMoveCheckBoxLogic() {
-        view.getStopMoveAlCheckBox().setOnAction(ActionEvent ->{
+        view.getStopMoveAlCheckBox().setOnAction(ActionEvent -> {
             stopAlMovementLogic();
         });
     }
 
     private void stopCrMoveCheckBoxLogic() {
-        view.getStopMoveCrCheckBox().setOnAction(ActionEvent ->{
+        view.getStopMoveCrCheckBox().setOnAction(ActionEvent -> {
             stopCrMovementLogic();
         });
     }
@@ -443,6 +442,12 @@ public class Controller {
 
     }
 
+    private void editMenuLogic() {
+        view.getTerminal().setOnAction(ActionEvent -> {
+            showTerminal();
+        });
+    }
+
     private void removeRabbit(Rabbit rabbit) {
         rabbit.delete(view.getRoot());
         model.getRabbitsIdSet().remove(rabbit.getID());
@@ -468,7 +473,6 @@ public class Controller {
 
     private void threadEditModeLogic(boolean isWorking) {
         model.setAdvancedMode(!model.isAdvancedMode());
-
         view.getStopMoveAlText().setVisible(!isWorking);
         view.getStopMoveCrText().setVisible(!isWorking);
         view.getAlThreadPriorityComBox().setVisible(!isWorking);
@@ -516,5 +520,37 @@ public class Controller {
             startCrMovement();
         else
             pauseCrMovement();
+    }
+
+    private void showTerminal() {
+        terminalController.showTerminal();
+    }
+
+    public void reduceAlbino(int reducePercent) {
+        int tmp = (reducePercent * model.getAlCount()) / 100;
+        for (int i = 0; i < model.getRabbitsVector().size(); ++i) {
+            if (tmp == 0) {
+                break;
+            }
+            if (model.getRabbitsVector().get(i) instanceof AlbinoRabbit) {
+                removeRabbit(model.getRabbitsVector().get(i));
+                tmp--;
+                i--;
+            }
+        }
+    }
+
+    public void reduceCommon(int reducePercent) {
+        int tmp = (reducePercent * model.getCrCount()) / 100;
+        for (int i = 0; i < model.getRabbitsVector().size(); ++i) {
+            if (tmp == 0) {
+                break;
+            }
+            if (model.getRabbitsVector().get(i) instanceof CommonRabbit) {
+                removeRabbit(model.getRabbitsVector().get(i));
+                tmp--;
+                i--;
+            }
+        }
     }
 }

@@ -14,9 +14,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            Controller controller = Controller.getInstance();
             Habitat view = Habitat.getInstance();
             view.initScene();
-            Controller controller = Controller.getInstance();
+
             controller.initController(view);
 
         } catch (Exception e) {

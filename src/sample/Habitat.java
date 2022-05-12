@@ -58,6 +58,7 @@ public class Habitat {
     private final MenuItem showAliveRabbits = new MenuItem("Show Alive Rabbits");
     private final MenuItem helpItem = new MenuItem("? Help");
     private final MenuItem threadEditMenuItem = new MenuItem("Thread Edit Mode");
+    private final MenuItem terminal = new MenuItem("Terminal");
 
     private final Text rabbitCount = new Text();
     private final Text timeText = new Text();
@@ -192,6 +193,18 @@ public class Habitat {
         return showAliveRabbits;
     }
 
+    public Alert getIncorrectRange() {
+        return incorrectRange;
+    }
+
+    public Menu getEditMenu() {
+        return editMenu;
+    }
+
+    public MenuItem getTerminal() {
+        return terminal;
+    }
+
     public MenuItem getPauseMenuItem() {
         return pauseMenuItem;
     }
@@ -295,7 +308,7 @@ public class Habitat {
     }
 
     public void initScene() {
-
+        TerminalView terminalView = TerminalView.getInstance();
         Image icon = new Image("resources/rabbitIcon.jpg");
 
         Rectangle recFace = new Rectangle(1039, 0, 241, 720);
@@ -311,7 +324,7 @@ public class Habitat {
         stage.setTitle("Rabbits");
         stage.setScene(scene);
         stage.setResizable(false);
-
+        terminalView.terminalInit();
         buttonPauseInit();
         buttonStartInit();
         buttonStopInit();
@@ -567,7 +580,7 @@ public class Habitat {
         runMenu.getItems().add(startMenuItem);
         runMenu.getItems().add(pauseMenuItem);
         runMenu.getItems().add(stopMenuItem);
-
+        editMenu.getItems().add(terminal);
         fileMenu.getItems().add(exitMenuItem);
 
         viewMenu.getItems().addAll(hideShowMenuItem, showAliveRabbits, threadEditMenuItem);
