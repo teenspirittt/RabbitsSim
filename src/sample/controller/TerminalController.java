@@ -1,10 +1,7 @@
-package sample;
+package sample.controller;
 
-import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
-import sample.rabbit.AlbinoRabbit;
-import sample.rabbit.CommonRabbit;
+import sample.model.Model;
+import sample.view.TerminalView;
 
 
 public class TerminalController {

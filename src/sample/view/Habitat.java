@@ -1,9 +1,10 @@
-package sample;
+package sample.view;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.*;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -11,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.view.TerminalView;
 
 
 public class Habitat {
@@ -86,7 +88,7 @@ public class Habitat {
     private final ObservableList<Integer> threadPriorityList = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
 
-    static synchronized Habitat getInstance() {
+    public static synchronized Habitat getInstance() {
         if (instance == null) {
             instance = new Habitat();
         }

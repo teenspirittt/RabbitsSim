@@ -1,17 +1,18 @@
-package sample;
+package sample.controller;
 
-import javafx.scene.Cursor;
-import sample.rabbitAI.*;
-import javafx.scene.text.Font;
-import sample.rabbit.*;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.text.Font;
+import sample.model.Model;
+import sample.rabbit.AlbinoRabbit;
+import sample.rabbit.CommonRabbit;
+import sample.rabbit.Rabbit;
+import sample.rabbitAI.AlbinoRabbitAI;
+import sample.rabbitAI.CommonRabbitAI;
+import sample.view.Habitat;
 
-
-import java.awt.event.ActionEvent;
-import java.awt.font.FontRenderContext;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
@@ -31,7 +32,7 @@ public class Controller {
     private final Random random = new Random();
     private Timer timer = new Timer();
 
-    static synchronized Controller getInstance() {
+    public static synchronized Controller getInstance() {
         if (instance == null) {
             instance = new Controller();
         }

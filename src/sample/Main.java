@@ -2,6 +2,8 @@ package sample;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import sample.controller.Controller;
+import sample.view.Habitat;
 
 
 public class Main extends Application {

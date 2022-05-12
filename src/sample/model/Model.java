@@ -1,6 +1,7 @@
-package sample;
+package sample.model;
 
-import sample.rabbit.*;
+import sample.rabbit.Rabbit;
+
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -26,7 +27,7 @@ public class Model {
     private final TreeSet<Integer> rabbitsIdSet = new TreeSet<>();
     private final HashMap<Integer, Integer> rabbitsLifeTimeMap = new HashMap<>();
 
-    static synchronized Model getInstance() {
+    public static synchronized Model getInstance() {
         if (instance == null) {
             instance = new Model();
         }

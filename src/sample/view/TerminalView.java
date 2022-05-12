@@ -1,4 +1,4 @@
-package sample;
+package sample.view;
 
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
@@ -15,7 +15,7 @@ public class TerminalView {
     private Stage stage = new Stage();
     private Scene scene;
 
-    static synchronized TerminalView getInstance() {
+    public static synchronized TerminalView getInstance() {
         if (instance == null) {
             instance = new TerminalView();
         }
