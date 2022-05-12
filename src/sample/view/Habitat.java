@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sample.controller.ConfigHandler;
 import sample.view.TerminalView;
 
 
@@ -86,7 +87,7 @@ public class Habitat {
     private final Text threadPriorityMainText = new Text("MT");
     private final ObservableList<Integer> chanceList = FXCollections.observableArrayList(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0);
     private final ObservableList<Integer> threadPriorityList = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
+    private static ConfigHandler configHandler = new ConfigHandler();
 
     public static synchronized Habitat getInstance() {
         if (instance == null) {
@@ -349,6 +350,7 @@ public class Habitat {
 
         initStats();
         stage.setOnCloseRequest(windowEvent -> {
+            configHandler.saveConfig();
             Platform.exit();
             System.exit(0);
         });

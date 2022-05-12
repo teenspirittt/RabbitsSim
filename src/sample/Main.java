@@ -2,13 +2,16 @@ package sample;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import sample.controller.ConfigHandler;
 import sample.controller.Controller;
 import sample.view.Habitat;
 
 
 public class Main extends Application {
+    private static ConfigHandler configHandler = new ConfigHandler();
 
     public static void main(String[] args) {
+        configHandler.loadConfig();
         launch(args);
 
     }
