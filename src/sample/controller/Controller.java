@@ -13,6 +13,7 @@ import sample.rabbitAI.AlbinoRabbitAI;
 import sample.rabbitAI.CommonRabbitAI;
 import sample.view.Habitat;
 
+
 import java.util.Optional;
 import java.util.Random;
 import java.util.Timer;
@@ -29,6 +30,7 @@ public class Controller {
     final CommonRabbitAI commonRabbitAI = new CommonRabbitAI(model.getRabbitsVector());
     final AlbinoRabbitAI albinoRabbitAI = new AlbinoRabbitAI(model.getRabbitsVector());
     TerminalController terminalController;
+    LoadSaveController loadSaveController = new LoadSaveController();
     private final Random random = new Random();
     private Timer timer = new Timer();
 
@@ -403,7 +405,14 @@ public class Controller {
     }
 
     private void fileMenuLogic() {
-        view.getExitMenuItem().setOnAction(ActionEvent -> System.exit(0));
+        view.getExitMenuItem().setOnAction(ActionEvent1 -> System.exit(0));
+        view.getSaveMenuItem().setOnAction(ActionEvent2 -> {
+            loadSaveController.saveRabbits();
+        });
+
+        view.getLoadMenuItem().setOnAction(ActionEvent3 -> {
+            loadSaveController.loadRabbits();
+        });
     }
 
     private void runMenuLogic() {
@@ -448,6 +457,7 @@ public class Controller {
             showTerminal();
         });
     }
+
 
     private void removeRabbit(Rabbit rabbit) {
         rabbit.delete(view.getRoot());

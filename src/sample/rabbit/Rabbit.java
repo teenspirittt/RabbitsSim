@@ -2,8 +2,12 @@ package sample.rabbit;
 
 import javafx.scene.Group;
 import sample.IBehaviour;
+import sample.model.Model;
+import sample.view.Habitat;
 
-public abstract class Rabbit extends Group implements IBehaviour {
+import java.io.*;
+
+public abstract class Rabbit extends Group implements IBehaviour, Serializable {
 
     protected int lifeTime;
     protected int birthTime;
@@ -14,7 +18,6 @@ public abstract class Rabbit extends Group implements IBehaviour {
     protected int birthY;
     protected int destX = 400;
     protected int destY = 400;
-
 
     public int getDestX() {
         return destX;
@@ -92,9 +95,20 @@ public abstract class Rabbit extends Group implements IBehaviour {
         super();
     }
 
-    public abstract void spawn(int x, int y, Group root);
+    public abstract void spawn(float x, float y, Group root);
 
     public abstract void delete(Group root);
+
+    @Serial
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream oot) throws IOException, ClassNotFoundException {
+        lifeTime -= Model.getInstance().gettTick() - birthTime;
+        oot.defaultWriteObject();
+    }
 
 
 }

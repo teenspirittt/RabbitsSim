@@ -23,7 +23,8 @@ public class Model {
     private boolean isStatsVisible = false;
     private boolean isAdvancedMode = true;
 
-    private final Vector<Rabbit> rabbitsVector = new Vector<>();
+
+    private Vector<Rabbit> rabbitsVector = new Vector<>();
     private final TreeSet<Integer> rabbitsIdSet = new TreeSet<>();
     private final HashMap<Integer, Integer> rabbitsLifeTimeMap = new HashMap<>();
 
@@ -44,6 +45,10 @@ public class Model {
 
     public TreeSet<Integer> getRabbitsIdSet() {
         return rabbitsIdSet;
+    }
+
+    public void setRabbitsVector(Vector<Rabbit> rabbitsVector) {
+        this.rabbitsVector = rabbitsVector;
     }
 
     public void resetStats() {

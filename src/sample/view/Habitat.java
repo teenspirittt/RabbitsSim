@@ -57,6 +57,8 @@ public class Habitat {
     private final MenuItem stopMenuItem = new MenuItem("Stop");
     private final MenuItem pauseMenuItem = new MenuItem("Pause");
     private final MenuItem exitMenuItem = new MenuItem("Exit");
+    private final MenuItem saveMenuItem = new MenuItem("Save");
+    private final MenuItem loadMenuItem = new MenuItem("Load");
     private final MenuItem hideShowMenuItem = new MenuItem("Hide/Show Statistic");
     private final MenuItem showAliveRabbits = new MenuItem("Show Alive Rabbits");
     private final MenuItem helpItem = new MenuItem("? Help");
@@ -238,6 +240,18 @@ public class Habitat {
 
     public Text getSettingsAlDelayText() {
         return settingsAlDelayText;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public MenuItem getSaveMenuItem() {
+        return saveMenuItem;
+    }
+
+    public MenuItem getLoadMenuItem() {
+        return loadMenuItem;
     }
 
     public Text getSettingsAlLifeTimeText() {
@@ -585,6 +599,9 @@ public class Habitat {
         runMenu.getItems().add(pauseMenuItem);
         runMenu.getItems().add(stopMenuItem);
         editMenu.getItems().add(terminal);
+
+        fileMenu.getItems().add(saveMenuItem);
+        fileMenu.getItems().add(loadMenuItem);
         fileMenu.getItems().add(exitMenuItem);
 
         viewMenu.getItems().addAll(hideShowMenuItem, showAliveRabbits, threadEditMenuItem);
