@@ -1,3 +1,7 @@
+
+
+import sample.controller.ConfigHandler;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -12,10 +16,18 @@ public class Client {
             writer.write(request);
             writer.newLine();
             writer.flush();
-    // 58 38
+            String response = br.readLine();
+            System.out.println("Response: " + response);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void sendConfig() {
+        ConfigHandler configHandler = new ConfigHandler();
+        configHandler.saveConfig();
+
     }
 
 }

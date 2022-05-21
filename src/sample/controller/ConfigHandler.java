@@ -9,9 +9,8 @@ public class ConfigHandler {
     Model model = Model.getInstance();
 
     public void saveConfig() {
-        try {
+        try (FileOutputStream fos = new FileOutputStream("src/resources/data/config.properties");) {
             Properties properties = new Properties();
-            FileOutputStream fos = new FileOutputStream("src/resources/data/config.properties");
             properties.setProperty("albino_spawn_chance", Integer.toString(model.getAlChance()));
             properties.setProperty("common_spawn_chance", Integer.toString(model.getCrChance()));
             properties.setProperty("albino_spawn_delay", Integer.toString(model.getAlTime()));
@@ -30,12 +29,10 @@ public class ConfigHandler {
     }
 
     public void loadConfig() {
-        try {
+        try (FileInputStream fis = new FileInputStream("src/resources/data/config.properties");) {
             Properties properties = new Properties();
-            FileInputStream fis = new FileInputStream("src/resources/data/config.properties");
             properties.load(fis);
             configReader(properties);
-            fis.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
