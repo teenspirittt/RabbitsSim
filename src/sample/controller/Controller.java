@@ -412,6 +412,7 @@ public class Controller {
 
         view.getLoadMenuItem().setOnAction(ActionEvent3 -> {
             loadSaveController.loadRabbits();
+            startLogic();
         });
     }
 

@@ -47,5 +47,4 @@ public class TerminalController {
             terminalView.getTerminalArea().setText("");
         }
     }
-
 }

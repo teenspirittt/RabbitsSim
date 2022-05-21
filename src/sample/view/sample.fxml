@@ -9,7 +9,6 @@
    <children>
       <ImageView fitHeight="504.0" fitWidth="744.0" layoutX="-5.0">
          <image>
-            <Image url="@../../../../OneDrive/Рабочий%20стол/bc1fc69b0205c8df_848xH.jpg" />
          </image>
       </ImageView>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4d4d4d2f" height="504.0" layoutX="529.0" stroke="BLACK" strokeType="INSIDE" width="207.0" />

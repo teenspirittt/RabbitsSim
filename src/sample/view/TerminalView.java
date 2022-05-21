@@ -2,9 +2,12 @@ package sample.view;
 
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 
 
 public class TerminalView {
@@ -24,11 +27,17 @@ public class TerminalView {
 
     public void terminalInit() {
         stage.initModality(Modality.NONE);
-        terminalArea.setPrefWidth(800);
-        terminalArea.setPrefHeight(250);
+        stage.setTitle("Terminal - user@BigChungus: ~");
+        Image image = new Image("resources/terminalIcon.png");
+        stage.getIcons().add(image);
+        terminalArea.setPrefWidth(525);
+        terminalArea.setPrefHeight(350);
+        terminalArea.setFont(Font.font("Courier New", 14));
         anchorPane.getChildren().add(terminalArea);
 
-        scene = new Scene(anchorPane, 800, 250);
+
+
+        scene = new Scene(anchorPane, 525, 350);
         stage.setScene(scene);
     }
 
