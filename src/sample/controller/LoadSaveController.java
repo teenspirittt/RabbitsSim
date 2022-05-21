@@ -7,7 +7,7 @@ import sample.rabbit.Rabbit;
 import sample.view.Habitat;
 
 import java.io.*;
-import java.util.Vector;
+
 
 
 public class LoadSaveController {

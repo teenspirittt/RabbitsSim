@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.controller.ConfigHandler;
-import sample.view.TerminalView;
+
 
 
 public class Habitat {

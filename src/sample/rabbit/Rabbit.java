@@ -3,7 +3,7 @@ package sample.rabbit;
 import javafx.scene.Group;
 import sample.IBehaviour;
 import sample.model.Model;
-import sample.view.Habitat;
+
 
 import java.io.*;
 
