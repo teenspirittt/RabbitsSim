@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
