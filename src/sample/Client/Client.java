@@ -1,15 +1,18 @@
+package sample.Client;
+
 
 import sample.controller.ConfigHandler;
 
 import java.io.*;
 import java.net.Socket;
 
-public class Client {
+public class Client extends Thread {
 
     private static OutputStream os = null;
     private static InputStream is = null;
+    ConfigHandler configHandler = new ConfigHandler();
 
-    public static void main(String[] args) {
+    public void run() {
         try (Socket socket = new Socket("192.168.0.12", 8000);
              BufferedWriter writer =
                      new BufferedWriter(
@@ -29,16 +32,14 @@ public class Client {
             String response = br.readLine();
             System.out.println("Response: " + response);
 
-
-            ConfigHandler configHandler = new ConfigHandler();
-            configHandler.saveConfig();
-            is = new FileInputStream("src/resources/data/config.properties");
-
-            int count;
-            byte[] buffer = new byte[8192];
-            while ((count = is.read(buffer)) > 0) {
-                os.write(buffer, 0, count);
+            while(!socket.isClosed()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,13 +47,14 @@ public class Client {
     }
 
 
-
-
-
     public void sendConfig() throws IOException {
-
-
+        configHandler.saveConfig();
+        is = new FileInputStream("src/resources/data/config.properties");
+        int count;
+        byte[] buffer = new byte[8192];
+        while ((count = is.read(buffer)) > 0) {
+            os.write(buffer, 0, count);
+        }
     }
-
 
 }

@@ -5,6 +5,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
+import sample.Client.Client;
 import sample.model.Model;
 import sample.rabbit.AlbinoRabbit;
 import sample.rabbit.CommonRabbit;
@@ -23,12 +24,14 @@ import java.util.TimerTask;
 public class Controller {
     private static Controller instance;
 
+    Client client = new Client();
 
     Model model = Model.getInstance();
     Habitat view = Habitat.getInstance();
 
+
     final CommonRabbitAI commonRabbitAI = new CommonRabbitAI(model.getRabbitsVector());
-    final AlbinoRabbitAI albinoRabbitAI = new AlbinoRabbitAI(model.getRabbitsVector());
+    final protected AlbinoRabbitAI albinoRabbitAI = new AlbinoRabbitAI(model.getRabbitsVector());
     TerminalController terminalController;
     LoadSaveController loadSaveController = new LoadSaveController();
     private final Random random = new Random();
@@ -134,7 +137,7 @@ public class Controller {
         return timer;
     }
 
-    public void keyBinds() {
+    private void keyBinds() {
         view.getScene().setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case B -> startLogic();
@@ -146,7 +149,7 @@ public class Controller {
         });
     }
 
-    private void startLogic() {
+    protected void startLogic() {
         if (!model.isTimerWorking()) {
             timer = startTimer();
             view.getStopMoveAlCheckBox().setDisable(false);
@@ -165,7 +168,7 @@ public class Controller {
         }
     }
 
-    private void pauseLogic() {
+    protected void pauseLogic() {
         timer.cancel();
         pauseAlMovement();
         pauseCrMovement();
@@ -182,7 +185,7 @@ public class Controller {
         view.getStartButton().setVisible(true);
     }
 
-    private void stopWithInfoLogic() {
+    protected void stopWithInfoLogic() {
         timer.cancel();
         if (!model.isStatsVisible()) {
             view.getStopSimulation().setContentText("Time: " + model.gettTick() +
@@ -205,7 +208,7 @@ public class Controller {
         }
     }
 
-    private void stopLogic() {
+    protected void stopLogic() {
         for (Rabbit rabbit : model.getRabbitsVector()) {
             rabbit.delete(view.getRoot());
         }
@@ -500,6 +503,10 @@ public class Controller {
     private void startAIThreads() {
         commonRabbitAI.start();
         albinoRabbitAI.start();
+    }
+
+    protected void startClientThread() {
+        client.start();
     }
 
     private void pauseAlMovement() {

@@ -31,8 +31,10 @@ public class TerminalView {
         stage.setTitle("Terminal - user@BigChungus: ~");
         Image image = new Image("resources/terminalIcon.png");
         stage.getIcons().add(image);
+        stage.setResizable(false);
         terminalArea.setPrefWidth(525);
         terminalArea.setPrefHeight(350);
+
         terminalArea.setFont(Font.font("Courier New", 14));
         anchorPane.getChildren().add(terminalArea);
 
