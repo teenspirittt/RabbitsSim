@@ -43,9 +43,9 @@ public class LoadSaveController {
                     model.getRabbitsIdSet().add(rabbit.getID());
                     model.getRabbitsLifeTimeMap().put(rabbit.getID(), model.gettTick());
                     if (rabbit instanceof CommonRabbit) {
-                        model.setAlCount(model.getAlCount() + 1);
-                    } else {
                         model.setCrCount(model.getCrCount() + 1);
+                    } else {
+                        model.setAlCount(model.getAlCount() + 1);
                     }
                 } catch (EOFException ex) {
                     break;
