@@ -32,10 +32,11 @@ public class TerminalView {
         Image image = new Image("resources/terminalIcon.png");
         stage.getIcons().add(image);
         stage.setResizable(false);
+        terminalArea.setStyle(" -fx-font-size: 14; -fx-font-family: 'Consolas';  -fx-control-inner-background: #29091e;-fx-text-fill: #eafffb; -fx-border-color: #29091e");
         terminalArea.setPrefWidth(525);
         terminalArea.setPrefHeight(350);
-
-        terminalArea.setFont(Font.font("Courier New", 14));
+        terminalArea.appendText(">>");
+        anchorPane.setStyle("-fx-background-color: #29091e");
         anchorPane.getChildren().add(terminalArea);
 
 

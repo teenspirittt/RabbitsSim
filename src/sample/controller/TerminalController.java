@@ -7,6 +7,7 @@ import java.io.IOException;
 
 
 public class TerminalController {
+    private int currentCursor = 2;
 
     private static TerminalController instance;
     TerminalView terminalView = TerminalView.getInstance();
@@ -42,38 +43,49 @@ public class TerminalController {
             percent = Integer.parseInt(numberOnly);
             System.out.println(numberOnly);
             System.out.println(percent);
-            text = text.substring(0, text.length() - numberOnly.length() - 2);
+            text = text.substring(currentCursor, text.length() - numberOnly.length() - 2);
         } else {
-            text = text.substring(0, text.length() - 1);
+            text = text.substring(currentCursor, text.length());
         }
-        if (text.compareTo("/reduceal") == 0 && percent > 0 && percent <= 100) {
-            terminalView.getTerminalArea().setText("");
+        if (text.compareTo("/reduceal\n") == 0 && percent > 0 && percent <= 100) {
+            terminalView.getTerminalArea().appendText(">>");
             controller.reduceAlbino(percent);
-
-        } else if (text.compareTo("/reducecr") == 0 && percent > 0 && percent <= 100) {
-            terminalView.getTerminalArea().setText("");
+            currentCursor = terminalView.getTerminalArea().getLength();
+        } else if (text.compareTo("/reducecr\n") == 0 && percent > 0 && percent <= 100) {
+            terminalView.getTerminalArea().appendText(">>");
             controller.reduceCommon(percent);
-        } else if (text.compareTo("/start") == 0) {
-            terminalView.getTerminalArea().setText("");
+            currentCursor = terminalView.getTerminalArea().getLength();
+        } else if (text.compareTo("/start\n") == 0) {
+            terminalView.getTerminalArea().appendText(">>");
             mainController.startLogic();
-        } else if (text.compareTo("/stop") == 0) {
-            terminalView.getTerminalArea().setText("");
+            currentCursor = terminalView.getTerminalArea().getLength();
+        } else if (text.compareTo("/stop\n") == 0) {
+            terminalView.getTerminalArea().appendText(">>");
+            currentCursor = terminalView.getTerminalArea().getLength();
             mainController.stopWithInfoLogic();
-        } else if (text.compareTo("/pause") == 0) {
-            terminalView.getTerminalArea().setText("");
+        } else if (text.compareTo("/pause\n") == 0) {
+            terminalView.getTerminalArea().appendText(">>");
+            currentCursor = terminalView.getTerminalArea().getLength();
             mainController.pauseLogic();
-        } else if (text.compareTo("/connect") == 0) {
-            terminalView.getTerminalArea().setText("");
+        } else if (text.compareTo("/connect\n") == 0) {
+            terminalView.getTerminalArea().appendText(" Connection to 192.168.0.12... \n>>");
+            currentCursor = terminalView.getTerminalArea().getLength();
             mainController.startClientThread();
-        } else if (text.compareTo("/sendconfig") == 0) {
-            terminalView.getTerminalArea().setText("");
+        } else if (text.compareTo("/sendconfig\n") == 0) {
+            terminalView.getTerminalArea().appendText(">>");
+            currentCursor = terminalView.getTerminalArea().getLength();
             try {
                 mainController.client.sendConfig();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            terminalView.getTerminalArea().setText("");
+        } else if (text.compareTo("\n") == 0) {
+            terminalView.getTerminalArea().appendText(">>");
+            currentCursor = terminalView.getTerminalArea().getLength();
+        }else {
+            terminalView.getTerminalArea().appendText(" [-] Unknown command: " + text + "\n>>");
+            //terminalView.getTerminalArea().appendText(" Connection to 192.168.0.12... \n>>");
+            currentCursor = terminalView.getTerminalArea().getLength();
         }
     }
 }

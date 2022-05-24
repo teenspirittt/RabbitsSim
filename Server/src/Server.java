@@ -30,13 +30,14 @@ public class Server {
                         writer.flush();
 
                         is = socket.getInputStream();
-                        os = new FileOutputStream("sendedConfig.properties");
+                        os = new FileOutputStream("Server/resources/sendedConfig.properties");
 
                         byte[] buffer = new byte[8192];
                         int count;
                         while ((count = is.read(buffer)) > 0) {
                             os.write(buffer, 0, count);
                         }
+
                         socket.close();
                         writer.close();
                         br.close();

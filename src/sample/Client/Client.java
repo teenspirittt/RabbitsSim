@@ -24,8 +24,8 @@ public class Client extends Thread {
         ) {
 
             os = socket.getOutputStream();
-            System.out.println("Connected to server 192.168.0.12:8000!");
-            String request = "aboba";
+            System.out.println("Connected to server 192.168.0.12:8000");
+            String request = "BigChungus";
             writer.write(request);
             writer.newLine();
             writer.flush();
