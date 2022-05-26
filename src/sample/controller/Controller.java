@@ -30,7 +30,7 @@ public class Controller {
     Model model = Model.getInstance();
     Habitat view = Habitat.getInstance();
 
-
+    PropertyPackage propertyPackage = new PropertyPackage();
     final CommonRabbitAI commonRabbitAI = new CommonRabbitAI(model.getRabbitsVector());
     final protected AlbinoRabbitAI albinoRabbitAI = new AlbinoRabbitAI(model.getRabbitsVector());
     TerminalController terminalController;
@@ -271,6 +271,7 @@ public class Controller {
                 "\nAlbino chance: " + model.getAlChance() +
                 "\nAlbino lifeTime: " + model.getAlLifeTime() +
                 "\nAlbino birthDelay: " + model.getAlTime());
+        propertyPackage.putProperties();
     }
 
     private void radButtonHideStatsLogic() {

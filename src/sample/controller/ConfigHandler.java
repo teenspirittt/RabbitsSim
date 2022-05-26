@@ -51,34 +51,32 @@ public class ConfigHandler {
             model.setCrChance(num);
         }
         num = Integer.parseInt(properties.getProperty("albino_spawn_delay", "100"));
-        if (num >= 0 && num <= 60 && num % 10 == 0) {
+        if (num >= 0 && num <= 60) {
             model.setAlTime(num);
         }
         num = Integer.parseInt(properties.getProperty("common_spawn_delay", "100"));
-        if (num >= 0 && num <= 60 && num % 10 == 0) {
+        if (num >= 0 && num <= 60) {
             model.setCrTime(num);
         }
         num = Integer.parseInt(properties.getProperty("albino_lifetime", "100"));
-        if (num >= 0 && num <= 999 && num % 10 == 0) {
+        if (num >= 0 && num <= 999) {
             model.setAlLifeTime(num);
         }
         num = Integer.parseInt(properties.getProperty("common_lifetime", "100"));
-        if (num >= 0 && num <= 999 && num % 10 == 0) {
+        if (num >= 0 && num <= 999) {
             model.setCrLifeTime(num);
         }
         num = Integer.parseInt(properties.getProperty("albino_thread_priority", "100"));
-        if (num >= 0 && num <= 10 && num % 10 == 0) {
+        if (num >= 0 && num <= 10) {
             model.setAlThreadPriority(num);
         }
         num = Integer.parseInt(properties.getProperty("common_thread_priority", "100"));
-        if (num >= 0 && num <= 10 && num % 10 == 0) {
+        if (num >= 0 && num <= 10) {
             model.setCrThreadPriority(num);
         }
         num = Integer.parseInt(properties.getProperty("main_thread_priority", "100"));
-        if (num >= 0 && num <= 10 && num % 10 == 0) {
+        if (num >= 0 && num <= 10) {
             model.setMainThreadPriority(num);
         }
     }
-
-
 }

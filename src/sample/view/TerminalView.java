@@ -32,14 +32,10 @@ public class TerminalView {
         Image image = new Image("resources/images/trmIcon.png");
         stage.getIcons().add(image);
         stage.setResizable(false);
-        terminalArea.setStyle(" -fx-font-size: 14; -fx-font-family: 'Consolas';  -fx-control-inner-background: #29091e;-fx-text-fill: #eafffb; -fx-border-color: #29091e");
-        terminalArea.setPrefWidth(525);
-        terminalArea.setPrefHeight(350);
+        String css = this.getClass().getResource("terminalBackground.css").toExternalForm();
+        terminalArea.getStylesheets().add(css);
         terminalArea.appendText(">>");
-        anchorPane.setStyle("-fx-background-color: #29091e");
         anchorPane.getChildren().add(terminalArea);
-
-
 
         scene = new Scene(anchorPane, 525, 350);
         stage.setScene(scene);

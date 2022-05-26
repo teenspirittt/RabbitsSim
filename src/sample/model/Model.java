@@ -2,11 +2,12 @@ package sample.model;
 
 import sample.rabbit.Rabbit;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
-public class Model {
+public class Model implements Serializable {
     private static Model instance;
     private int crCount = 0, alCount = 0;
     private int crChance = 70;
@@ -22,6 +23,7 @@ public class Model {
     private boolean isTimerWorking = false;
     private boolean isStatsVisible = false;
     private boolean isAdvancedMode = true;
+
 
 
     private Vector<Rabbit> rabbitsVector = new Vector<>();
@@ -57,6 +59,8 @@ public class Model {
         tTick = 0;
         rabbitsVector.clear();
     }
+
+
 
 
     public int getAlChance() {

@@ -1,5 +1,7 @@
 package sample.Server.src;
 
+import sample.controller.PropertyPackage;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,7 +29,7 @@ public class EchoMultiServer {
         }
     }
 
-    public String getClients(){
+    public String getClients() {
         StringBuffer names = new StringBuffer();
         for (EchoClientHandler client : clientList)
             names.append("Client ").append(client.getClientId()).append("\n");
@@ -47,9 +49,12 @@ public class EchoMultiServer {
 
     private static class EchoClientHandler extends Thread {
         private Socket clientSocket;
-        private DataOutputStream out;
+        private ObjectOutputStream out;
         private DataInputStream in;
-        private final int id;
+        private ObjectInputStream ois;
+        private ObjectOutputStream oos;
+        private int id;
+        PropertyPackage prpPck;
 
         public EchoClientHandler(Socket socket, int id) {
             this.id = id;
@@ -58,13 +63,17 @@ public class EchoMultiServer {
 
         public void run() {
             try {
-                out = new DataOutputStream(clientSocket.getOutputStream());
-                in = new DataInputStream(clientSocket.getInputStream());
+                oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                ois = new ObjectInputStream(clientSocket.getInputStream());
 
-                receiveFile();
+                while (!clientSocket.isClosed() && !clientSocket.isOutputShutdown() && !clientSocket.isInputShutdown()) {
+                    String code = ois.readUTF();
+                    switch (code) {
+                        case "SEND.PACKAGE" -> sendObj();
+                        case "GET.PACKAGE" -> getObj();
+                    }
+                }
 
-                in.close();
-                out.close();
                 clientSocket.close();
 
             } catch (IOException e) {
@@ -72,28 +81,55 @@ public class EchoMultiServer {
             }
         }
 
-        private  void receiveFile() throws IOException{
-            int bytes;
-            FileOutputStream fileOutputStream = new FileOutputStream("aboba.properties");
 
-                // read file size
-            byte[] buffer = new byte[4*1024];
-            while ((bytes = in.read(buffer)) > 0) {
-                fileOutputStream.write(buffer,0,bytes);
+        public void getObj() {
+            try {
+                System.out.println("get props");
+                prpPck = (PropertyPackage) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-            fileOutputStream.close();
+
+        }
+
+        public void sendObj() {
+            try {
+                System.out.println("send props");
+                oos.writeObject(prpPck);
+                oos.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
         protected int getClientId() {
             return id;
         }
+
+        private void receiveFile() throws IOException {
+            int bytes;
+
+            File file = new File("Client" + id + ".properties");
+
+            file.createNewFile();
+
+
+            byte[] buffer = new byte[4 * 1024];
+            while ((bytes = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytes);
+                out.flush();
+                buffer = new byte[4 * 1024];
+            }
+            in.reset();
+        }
+
     }
 
     public static void main(String[] args) {
         EchoMultiServer server = new EchoMultiServer();
         server.start(8000);
     }
-
 
 
 }

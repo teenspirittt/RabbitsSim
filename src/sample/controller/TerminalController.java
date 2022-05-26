@@ -12,6 +12,7 @@ public class TerminalController {
     private static TerminalController instance;
     TerminalView terminalView = TerminalView.getInstance();
     Controller controller = Controller.getInstance();
+    Controller mainController = Controller.getInstance();
 
     public void showTerminal() {
         terminalView.getStage().show();
@@ -37,7 +38,6 @@ public class TerminalController {
     public void enterCommand() {
 
         int percent = 0;
-        Controller mainController = Controller.getInstance();
         String text = terminalView.getTerminalArea().getText();
         text = text.substring(currentCursor);
         String numberOnly = text.replaceAll("[^0-9]", "");
@@ -47,63 +47,80 @@ public class TerminalController {
             text = text.substring(0, text.length() - 2 - numberOnly.length());
         }
 
-
-        if (text.compareTo("/reduceal") == 0 && percent > 0 && percent <= 100) {
-
-            terminalView.getTerminalArea().appendText(">>");
-            controller.reduceAlbino(percent);
-            currentCursor = terminalView.getTerminalArea().getLength();
-        } else if (text.compareTo("/reducecr") == 0 && percent > 0 && percent <= 100) {
-
-            terminalView.getTerminalArea().appendText(">>");
-            controller.reduceCommon(percent);
-            currentCursor = terminalView.getTerminalArea().getLength();
-
-        } else if (text.compareTo("/start\n") == 0) {
-            terminalView.getTerminalArea().appendText(">>");
-            mainController.startLogic();
-
-            currentCursor = terminalView.getTerminalArea().getLength();
-        } else if (text.compareTo("/stop\n") == 0) {
-            terminalView.getTerminalArea().appendText(">>");
-            currentCursor = terminalView.getTerminalArea().getLength();
-            mainController.stopWithInfoLogic();
-
-        } else if (text.compareTo("/pause\n") == 0) {
-            terminalView.getTerminalArea().appendText(">>");
-            currentCursor = terminalView.getTerminalArea().getLength();
-            mainController.pauseLogic();
-
-        } else if (text.compareTo("/connect\n") == 0) {
-            terminalView.getTerminalArea().appendText(" Connection to 192.168.0.12...\n>>");
-            mainController.echoClient.startConnection("192.168.0.12", 8000);
-            currentCursor = terminalView.getTerminalArea().getLength();
-
-
-        } else if (text.compareTo("/sendconfig\n") == 0) {
-            terminalView.getTerminalArea().appendText(">>");
-
-
-            try {
-                mainController.echoClient.sendFile();
-            } catch (Exception e) {
-                e.printStackTrace();
+        switch (text) {
+            case "/start\n" -> startCommand();
+            case "/stop\n" -> stopCommand();
+            case "/pause\n" -> pauseCommand();
+            case "/reducecr" -> reduceCrCommand(percent);
+            case "/reduceal" -> reduceAlCommand(percent);
+            case "/send object\n" -> sendObjectCommand();
+            case "/connect\n" -> connectCommand();
+            case "/stopConnection\n" -> stopConnectionCommand();
+            case "/get object\n" -> getObjectCommand();
+            case "\n" -> endlCommand();
+            default -> {
+                terminalView.getTerminalArea().appendText(" [-] Unknown command: " + text + "\n>>");
+                currentCursor = terminalView.getTerminalArea().getLength();
             }
-
-            currentCursor = terminalView.getTerminalArea().getLength();
-
-        } else if (text.compareTo("/stop connection\n") == 0) {
-            terminalView.getTerminalArea().appendText(">>");
-            mainController.echoClient.stopConnection();
-            currentCursor = terminalView.getTerminalArea().getLength();
-
-        } else if (text.compareTo("\n") == 0) {
-            terminalView.getTerminalArea().appendText(">>");
-            currentCursor = terminalView.getTerminalArea().getLength();
-
-        } else {
-            terminalView.getTerminalArea().appendText(" [-] Unknown command: " + text + "\n>>");
-            currentCursor = terminalView.getTerminalArea().getLength();
         }
+    }
+
+    void startCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        mainController.startLogic();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void reduceCrCommand(int percent) {
+        terminalView.getTerminalArea().appendText(">>");
+        controller.reduceCommon(percent);
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void reduceAlCommand(int percent) {
+        terminalView.getTerminalArea().appendText(">>");
+        controller.reduceAlbino(percent);
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void stopCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        mainController.stopWithInfoLogic();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void pauseCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        mainController.pauseLogic();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void connectCommand() {
+        terminalView.getTerminalArea().appendText(" Connection to 192.168.0.12...\n>>");
+        mainController.echoClient.startConnection("192.168.0.12", 8000);
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void stopConnectionCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        mainController.echoClient.stopConnection();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void sendObjectCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        mainController.echoClient.sendObj();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void endlCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void getObjectCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        mainController.echoClient.getObj();
+        currentCursor = terminalView.getTerminalArea().getLength();
     }
 }

@@ -13,7 +13,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         configHandler.loadConfig();
         launch(args);
-
     }
 
     @Override
@@ -22,9 +21,7 @@ public class Main extends Application {
             Controller controller = Controller.getInstance();
             Habitat view = Habitat.getInstance();
             view.initScene();
-
             controller.initController(view);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

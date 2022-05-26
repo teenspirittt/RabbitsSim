@@ -3,5 +3,7 @@
     -fx-font-family: 'Consolas';
     -fx-text-fill: #eafffb;
     -fx-font-size: 14;
-    -fx-border-color: #29091e
+    -fx-border-color: #29091e;
+    -fx-pref-height: 350;
+    -fx-pref-width: 525;
 }
