@@ -1,3 +1,7 @@
-.custom {
-    -fx-control-inner-background: black;
+.text-area{
+    -fx-control-inner-background: #29091e;
+    -fx-font-size: 14;
+    -fx-font-family: 'Consolas';
+    -fx-text-fill: #eafffb;
+    -fx-border-color: #29091e
 }
