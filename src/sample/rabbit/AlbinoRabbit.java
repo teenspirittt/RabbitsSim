@@ -14,7 +14,7 @@ public class AlbinoRabbit extends Rabbit {
     public double rabbitSpeed = 2;
 
 
-    transient private ImageView imageView = new ImageView("resources/albino.png");
+    transient private ImageView imageView = new ImageView("resources/images/alRabbit.png");
 
     public AlbinoRabbit() {
         super();

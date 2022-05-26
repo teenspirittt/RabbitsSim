@@ -326,7 +326,7 @@ public class Habitat {
 
     public void initScene() {
         TerminalView terminalView = TerminalView.getInstance();
-        Image icon = new Image("resources/rabbitIcon.jpg");
+        Image icon = new Image("resources/images/mainIcon.jpg");
 
         Rectangle recFace = new Rectangle(1039, 0, 241, 720);
         recFace.setFill(Color.web("0000004a"));

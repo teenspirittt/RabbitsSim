@@ -13,7 +13,7 @@ import java.io.Serial;
 
 public class CommonRabbit extends Rabbit {
     public double rabbitSpeed = 2;
-    transient private ImageView imageView = new ImageView("resources/commonRabbit.png");
+    transient private ImageView imageView = new ImageView("resources/images/crRabbit.png");
 
     public CommonRabbit() {
         super();

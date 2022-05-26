@@ -5,7 +5,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
-import sample.Client.Client;
+import sample.Client.EchoClient;
 import sample.model.Model;
 import sample.rabbit.AlbinoRabbit;
 import sample.rabbit.CommonRabbit;
@@ -24,7 +24,8 @@ import java.util.TimerTask;
 public class Controller {
     private static Controller instance;
 
-    Client client = new Client();
+    EchoClient echoClient = new EchoClient();
+
 
     Model model = Model.getInstance();
     Habitat view = Habitat.getInstance();
@@ -504,11 +505,6 @@ public class Controller {
         commonRabbitAI.start();
         albinoRabbitAI.start();
     }
-
-    protected void startClientThread() {
-        client.start();
-    }
-
     private void pauseAlMovement() {
         albinoRabbitAI.pause();
     }
