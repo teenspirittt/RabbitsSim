@@ -261,7 +261,7 @@ public class Controller {
         view.getTimeText().setText("Time: " + model.gettTick());
     }
 
-    private void updateStats() {
+    protected void updateStats() {
         view.getRabbitCount().setText("Time: " + model.gettTick() +
                 "\nClassic Rabbits: " + model.getCrCount() +
                 "\nAlbino Rabbits: " + model.getAlCount() +
@@ -271,7 +271,6 @@ public class Controller {
                 "\nAlbino chance: " + model.getAlChance() +
                 "\nAlbino lifeTime: " + model.getAlLifeTime() +
                 "\nAlbino birthDelay: " + model.getAlTime());
-        propertyPackage.putProperties();
     }
 
     private void radButtonHideStatsLogic() {

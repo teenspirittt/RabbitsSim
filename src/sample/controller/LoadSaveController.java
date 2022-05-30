@@ -32,7 +32,7 @@ public class LoadSaveController {
     public void loadRabbits() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("./src/resources/data"));
-        File file = fileChooser.showSaveDialog(habitat.getStage());
+        File file = fileChooser.showOpenDialog(habitat.getStage());
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             while (true) {

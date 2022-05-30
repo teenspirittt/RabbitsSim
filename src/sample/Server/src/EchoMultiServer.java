@@ -1,5 +1,6 @@
 package sample.Server.src;
 
+import sample.controller.Controller;
 import sample.controller.PropertyPackage;
 
 import java.io.*;
@@ -10,16 +11,30 @@ import java.util.Vector;
 
 public class EchoMultiServer {
 
+    private static EchoMultiServer instance;
     private ServerSocket serverSocket;
     private int clientCount = 0;
     private Vector<EchoClientHandler> clientList = new Vector<>();
     private int id;
 
+    public PropertyPackage prpPck;
+    public PropertyPackage tmp;
+
+
+    public static synchronized EchoMultiServer getInstance() {
+        if (instance == null) {
+            instance = new EchoMultiServer();
+        }
+        return instance;
+    }
+
     public void start(int port) {
         try {
             serverSocket = new ServerSocket(port);
             while (true) {
-                new EchoClientHandler(serverSocket.accept(), id++).start();
+                EchoClientHandler ech = new EchoClientHandler(serverSocket.accept(), id++);
+                clientList.add(ech);
+                ech.start();
                 clientCount++;
             }
         } catch (IOException e) {
@@ -30,7 +45,7 @@ public class EchoMultiServer {
     }
 
     public String getClients() {
-        StringBuffer names = new StringBuffer();
+        StringBuilder names = new StringBuilder();
         for (EchoClientHandler client : clientList)
             names.append("Client ").append(client.getClientId()).append("\n");
         return names.toString();
@@ -48,13 +63,11 @@ public class EchoMultiServer {
     }
 
     private static class EchoClientHandler extends Thread {
-        private Socket clientSocket;
-        private ObjectOutputStream out;
-        private DataInputStream in;
+        private final Socket clientSocket;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
-        private int id;
-        PropertyPackage prpPck;
+        private final int id;
+        EchoMultiServer ems = EchoMultiServer.getInstance();
 
         public EchoClientHandler(Socket socket, int id) {
             this.id = id;
@@ -67,10 +80,11 @@ public class EchoMultiServer {
                 ois = new ObjectInputStream(clientSocket.getInputStream());
 
                 while (!clientSocket.isClosed() && !clientSocket.isOutputShutdown() && !clientSocket.isInputShutdown()) {
-                    String code = ois.readUTF();
-                    switch (code) {
-                        case "SEND.PACKAGE" -> sendObj();
-                        case "GET.PACKAGE" -> getObj();
+                    String request = ois.readUTF();
+                    switch (request) {
+                        case "SEND.PACKAGE" -> getObj();
+                        case "GET.PACKAGE" -> sendObj();
+                        case "GET.CLIENTS" -> sendClientsList();
                     }
                 }
 
@@ -85,7 +99,9 @@ public class EchoMultiServer {
         public void getObj() {
             try {
                 System.out.println("get props");
-                prpPck = (PropertyPackage) ois.readObject();
+                ems.prpPck = (PropertyPackage) ois.readObject();
+                ems.prpPck.printProperties();
+                ems.tmp = ems.prpPck;
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -95,34 +111,31 @@ public class EchoMultiServer {
         public void sendObj() {
             try {
                 System.out.println("send props");
-                oos.writeObject(prpPck);
+                ems.tmp.printProperties();
+                oos.writeObject(ems.tmp);
                 oos.reset();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
+
+        public void sendClientsList() {
+            System.out.println("sending list of on-line clients");
+            try {
+                oos.writeUTF(ems.getClients());
+                System.out.println(ems.getClients());
+                oos.reset();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         protected int getClientId() {
             return id;
         }
 
-        private void receiveFile() throws IOException {
-            int bytes;
-
-            File file = new File("Client" + id + ".properties");
-
-            file.createNewFile();
-
-
-            byte[] buffer = new byte[4 * 1024];
-            while ((bytes = in.read(buffer)) != -1) {
-                out.write(buffer, 0, bytes);
-                out.flush();
-                buffer = new byte[4 * 1024];
-            }
-            in.reset();
-        }
 
     }
 

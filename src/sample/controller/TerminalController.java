@@ -57,6 +57,7 @@ public class TerminalController {
             case "/connect\n" -> connectCommand();
             case "/stopConnection\n" -> stopConnectionCommand();
             case "/get object\n" -> getObjectCommand();
+            case "/get online\n" -> getClientsListCommand();
             case "\n" -> endlCommand();
             default -> {
                 terminalView.getTerminalArea().appendText(" [-] Unknown command: " + text + "\n>>");
@@ -109,7 +110,8 @@ public class TerminalController {
 
     void sendObjectCommand() {
         terminalView.getTerminalArea().appendText(">>");
-        mainController.echoClient.sendObj();
+        controller.propertyPackage.putProperties();
+        mainController.echoClient.sendObj(controller.propertyPackage);
         currentCursor = terminalView.getTerminalArea().getLength();
     }
 
@@ -120,7 +122,16 @@ public class TerminalController {
 
     void getObjectCommand() {
         terminalView.getTerminalArea().appendText(">>");
-        mainController.echoClient.getObj();
+        PropertyPackage tmp = mainController.echoClient.getObj();
+        tmp.setProperties();
         currentCursor = terminalView.getTerminalArea().getLength();
     }
+
+    void getClientsListCommand() {
+        String tmp = mainController.echoClient.getClientsList();
+        terminalView.getTerminalArea().appendText(tmp + ">>");
+        currentCursor = terminalView.getTerminalArea().getLength();
+
+    }
+
 }

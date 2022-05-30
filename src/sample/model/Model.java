@@ -10,12 +10,12 @@ import java.util.Vector;
 public class Model implements Serializable {
     private static Model instance;
     private int crCount = 0, alCount = 0;
-    private int crChance = 70;
-    private int alChance = 20;
-    private int alLifeTime = 5;
-    private int crLifeTime = 5;
-    private int crTime = 2;
-    private int alTime = 2;
+    private int crChance;
+    private int alChance;
+    private int alLifeTime;
+    private int crLifeTime;
+    private int crTime;
+    private int alTime;
     private int tTick = 0;
     private int alThreadPriority = 5;
     private int crThreadPriority = 5;
