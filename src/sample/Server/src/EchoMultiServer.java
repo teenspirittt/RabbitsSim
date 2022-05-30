@@ -1,6 +1,5 @@
 package sample.Server.src;
 
-import sample.controller.Controller;
 import sample.controller.PropertyPackage;
 
 import java.io.*;
@@ -13,7 +12,7 @@ public class EchoMultiServer {
 
     private static EchoMultiServer instance;
     private static int clientCount = 0;
-    private static Vector<EchoClientHandler> clientList = new Vector<>();
+    private static final Vector<EchoClientHandler> clientList = new Vector<>();
     private static int id = 0;
 
     public PropertyPackage prpPck;
@@ -28,21 +27,14 @@ public class EchoMultiServer {
     }
 
     public static void main(String[] args) {
-
-       /* EchoMultiServer server = getInstance();
-        server.start(8000);*/
-
         ServerSocket serverSocket = null;
         int port = 8000;
-
         try {
             serverSocket = new ServerSocket(port);
             while (true) {
                 EchoClientHandler ech = new EchoClientHandler(serverSocket.accept(), id++);
                 clientList.add(ech);
                 clientCount++;
-
-                System.out.println(getClients());
 
                 ech.start();
             }
@@ -53,15 +45,10 @@ public class EchoMultiServer {
         }
     }
 
-    public void start(int port) {
-
-    }
-
     public static String getClients() {
         StringBuilder names = new StringBuilder();
         for (EchoClientHandler client : clientList)
             names.append("Client ").append(client.getClientId()).append("\n");
-        System.out.println("getCl" + clientList);
         return names.toString();
     }
 
@@ -137,11 +124,11 @@ public class EchoMultiServer {
         public void sendClientsList() {
             System.out.println("sending list of on-line clients");
             try {
-                oos.writeUTF(ems.getClients());
+                oos.writeUTF(getClients());
                 oos.reset();
 
-                System.out.println(ems.getClients());
-                System.out.println(ems.clientList.size());
+                System.out.println(getClients());
+                System.out.println(clientList.size());
 
 
             } catch (IOException e) {

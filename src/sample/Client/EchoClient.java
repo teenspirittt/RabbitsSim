@@ -1,13 +1,12 @@
 package sample.Client;
 
-import sample.controller.ConfigHandler;
+
 import sample.controller.PropertyPackage;
 
 import java.io.*;
 import java.net.Socket;
 
 public class EchoClient {
-    ConfigHandler configHandler = new ConfigHandler();
     private Socket clientSocket;
 
     private ObjectOutputStream oos;
@@ -56,10 +55,8 @@ public class EchoClient {
         String tmp = null;
         try {
             oos.writeUTF("GET.CLIENTS");
-            System.out.println("clinet->server");
             oos.reset();
             tmp = ois.readUTF();
-            System.out.println(tmp);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,27 +65,11 @@ public class EchoClient {
 
     public void stopConnection() {
         try {
-
-
+            ois.close();
+            oos.close();
             clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-   /* public void sendFile() throws Exception {
-        configHandler.saveConfig();
-        int bytes;
-        out.flush();
-        File file = new File("src/resources/data/config.properties");
-        FileInputStream fis = new FileInputStream(file);
-
-        byte[] buffer = new byte[8192];
-        while ((bytes = fis.read(buffer)) != -1) {
-            out.write(buffer, 0, bytes);
-            out.flush();
-        }
-        out.flush();
-        fis.close();
-    }*/
 }
