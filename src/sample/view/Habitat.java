@@ -53,17 +53,21 @@ public class Habitat {
     private final Menu fileMenu = new Menu("File");
     private final Menu viewMenu = new Menu("View");
     private final Menu helpMenu = new Menu("Help");
+    private final Menu saveSubMenu = new Menu("Save");
+    private final Menu loadSubMenu = new Menu("Load");
     private final MenuItem startMenuItem = new MenuItem("Start");
     private final MenuItem stopMenuItem = new MenuItem("Stop");
     private final MenuItem pauseMenuItem = new MenuItem("Pause");
     private final MenuItem exitMenuItem = new MenuItem("Exit");
-    private final MenuItem saveMenuItem = new MenuItem("Save");
-    private final MenuItem loadMenuItem = new MenuItem("Load");
+    private final MenuItem saveMenuItem = new MenuItem("Save in .dat");
+    private final MenuItem loadMenuItem = new MenuItem("Load from .dat");
     private final MenuItem hideShowMenuItem = new MenuItem("Hide/Show Statistic");
     private final MenuItem showAliveRabbits = new MenuItem("Show Alive Rabbits");
     private final MenuItem helpItem = new MenuItem("? Help");
     private final MenuItem threadEditMenuItem = new MenuItem("Thread Edit Mode");
     private final MenuItem terminal = new MenuItem("Terminal");
+    private final MenuItem saveDBMenuItem = new MenuItem("Save in DB");
+    private final MenuItem loadDBMenuItem = new MenuItem("Load from DB");
 
     private final Text rabbitCount = new Text();
     private final Text timeText = new Text();
@@ -126,6 +130,14 @@ public class Habitat {
         return showStats;
     }
 
+    public MenuBar getMenuBar() {
+        return menuBar;
+    }
+
+    public MenuItem getSaveDBMenuItem() {
+        return saveDBMenuItem;
+    }
+
     public TextField getTextFieldAlDelay() {
         return textFieldAlDelay;
     }
@@ -176,6 +188,10 @@ public class Habitat {
 
     public Group getRoot() {
         return root;
+    }
+
+    public MenuItem getLoadDBMenuItem() {
+        return loadDBMenuItem;
     }
 
     public Scene getScene() {
@@ -595,13 +611,19 @@ public class Habitat {
     private void menuInit() {
         menuBar.getMenus().addAll(fileMenu, editMenu, viewMenu, runMenu, helpMenu);
         menuBar.setPrefWidth(1280);
+
+
         runMenu.getItems().add(startMenuItem);
         runMenu.getItems().add(pauseMenuItem);
         runMenu.getItems().add(stopMenuItem);
         editMenu.getItems().add(terminal);
 
-        fileMenu.getItems().add(saveMenuItem);
-        fileMenu.getItems().add(loadMenuItem);
+        fileMenu.getItems().addAll(saveSubMenu,loadSubMenu);
+
+        loadSubMenu.getItems().addAll(loadMenuItem,loadDBMenuItem);
+        saveSubMenu.getItems().addAll(saveMenuItem,saveDBMenuItem);
+
+
         fileMenu.getItems().add(exitMenuItem);
 
         viewMenu.getItems().addAll(hideShowMenuItem, showAliveRabbits, threadEditMenuItem);

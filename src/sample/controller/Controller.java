@@ -34,6 +34,7 @@ public class Controller {
     final CommonRabbitAI commonRabbitAI = new CommonRabbitAI(model.getRabbitsVector());
     final protected AlbinoRabbitAI albinoRabbitAI = new AlbinoRabbitAI(model.getRabbitsVector());
     TerminalController terminalController;
+    DataBaseHandler dataBaseHandler = new DataBaseHandler();
     LoadSaveController loadSaveController = new LoadSaveController();
     private final Random random = new Random();
     private Timer timer = new Timer();
@@ -412,6 +413,14 @@ public class Controller {
         view.getExitMenuItem().setOnAction(ActionEvent1 -> System.exit(0));
         view.getSaveMenuItem().setOnAction(ActionEvent2 -> {
             loadSaveController.saveRabbits();
+        });
+
+        view.getSaveDBMenuItem().setOnAction(ActionEvent4 -> {
+            dataBaseHandler.saveAll();
+        });
+
+        view.getLoadDBMenuItem().setOnAction(ActionEvent4 -> {
+            dataBaseHandler.loadAll(view.getRoot());
         });
 
         view.getLoadMenuItem().setOnAction(ActionEvent3 -> {

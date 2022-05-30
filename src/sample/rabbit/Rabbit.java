@@ -14,40 +14,40 @@ public abstract class Rabbit extends Group implements IBehaviour, Serializable {
     protected int ID;
     protected float posX;
     protected float posY;
-    protected int birthX;
-    protected int birthY;
-    protected int destX = 400;
-    protected int destY = 400;
+    protected float birthX;
+    protected float birthY;
+    protected float destX = 400;
+    protected float destY = 400;
 
-    public int getDestX() {
+    public float getDestX() {
         return destX;
     }
 
-    public void setDestX(int destX) {
+    public void setDestX(float destX) {
         this.destX = destX;
     }
 
-    public int getDestY() {
+    public float getDestY() {
         return destY;
     }
 
-    public void setDestY(int destY) {
+    public void setDestY(float destY) {
         this.destY = destY;
     }
 
-    public int getBirthX() {
+    public float getBirthX() {
         return birthX;
     }
 
-    public void setBirthX(int birthX) {
+    public void setBirthX(float birthX) {
         this.birthX = birthX;
     }
 
-    public int getBirthY() {
+    public float getBirthY() {
         return birthY;
     }
 
-    public void setBirthY(int birthY) {
+    public void setBirthY(float birthY) {
         this.birthY = birthY;
     }
 

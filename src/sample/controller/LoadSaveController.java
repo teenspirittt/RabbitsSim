@@ -31,7 +31,9 @@ public class LoadSaveController {
 
     public void loadRabbits() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("./src/resources/data"));
+        fileChooser.setTitle("Load");
+        fileChooser.setInitialDirectory(new File("./"));
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Dat files", "*.dat"));
         File file = fileChooser.showOpenDialog(habitat.getStage());
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
