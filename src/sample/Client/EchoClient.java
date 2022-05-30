@@ -56,6 +56,7 @@ public class EchoClient {
         String tmp = null;
         try {
             oos.writeUTF("GET.CLIENTS");
+            System.out.println("clinet->server");
             oos.reset();
             tmp = ois.readUTF();
             System.out.println(tmp);

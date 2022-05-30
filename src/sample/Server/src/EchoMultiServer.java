@@ -12,10 +12,9 @@ import java.util.Vector;
 public class EchoMultiServer {
 
     private static EchoMultiServer instance;
-    private ServerSocket serverSocket;
-    private int clientCount = 0;
-    private Vector<EchoClientHandler> clientList = new Vector<>();
-    private int id;
+    private static int clientCount = 0;
+    private static Vector<EchoClientHandler> clientList = new Vector<>();
+    private static int id = 0;
 
     public PropertyPackage prpPck;
     public PropertyPackage tmp;
@@ -28,39 +27,54 @@ public class EchoMultiServer {
         return instance;
     }
 
-    public void start(int port) {
+    public static void main(String[] args) {
+
+       /* EchoMultiServer server = getInstance();
+        server.start(8000);*/
+
+        ServerSocket serverSocket = null;
+        int port = 8000;
+
         try {
             serverSocket = new ServerSocket(port);
             while (true) {
                 EchoClientHandler ech = new EchoClientHandler(serverSocket.accept(), id++);
                 clientList.add(ech);
-                ech.start();
                 clientCount++;
+
+                System.out.println(getClients());
+
+                ech.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            stop();
+            stop(serverSocket);
         }
     }
 
-    public String getClients() {
+    public void start(int port) {
+
+    }
+
+    public static String getClients() {
         StringBuilder names = new StringBuilder();
         for (EchoClientHandler client : clientList)
             names.append("Client ").append(client.getClientId()).append("\n");
+        System.out.println("getCl" + clientList);
         return names.toString();
     }
 
 
-    public void stop() {
+    public static void stop(ServerSocket serverSocket) {
         try {
             serverSocket.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
+
 
     private static class EchoClientHandler extends Thread {
         private final Socket clientSocket;
@@ -87,7 +101,8 @@ public class EchoMultiServer {
                         case "GET.CLIENTS" -> sendClientsList();
                     }
                 }
-
+                oos.close();
+                ois.close();
                 clientSocket.close();
 
             } catch (IOException e) {
@@ -123,8 +138,11 @@ public class EchoMultiServer {
             System.out.println("sending list of on-line clients");
             try {
                 oos.writeUTF(ems.getClients());
-                System.out.println(ems.getClients());
                 oos.reset();
+
+                System.out.println(ems.getClients());
+                System.out.println(ems.clientList.size());
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -138,11 +156,4 @@ public class EchoMultiServer {
 
 
     }
-
-    public static void main(String[] args) {
-        EchoMultiServer server = new EchoMultiServer();
-        server.start(8000);
-    }
-
-
 }
