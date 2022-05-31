@@ -26,6 +26,8 @@ public class DataBaseHandler {
             "spawn_x real," +
             "spawn_y real," +
             "birth_time int," +
+            "dest_x real," +
+            "dest_y real," +
             "life_time int)";
 
 
@@ -59,6 +61,8 @@ public class DataBaseHandler {
         command += commonRabbit.getBirthX() + ",";
         command += commonRabbit.getBirthY() + ",";
         command += commonRabbit.getBirthTime() + ",";
+        command += commonRabbit.getDestX() + ",";
+        command += commonRabbit.getDestY() + ",";
         command += commonRabbit.getLifeTime() - (model.gettTick() - commonRabbit.getBirthTime()) + ");";
         System.out.println(command);
         return command;
@@ -73,34 +77,42 @@ public class DataBaseHandler {
         command += albinoRabbit.getBirthX() + ",";
         command += albinoRabbit.getBirthY() + ",";
         command += albinoRabbit.getBirthTime() + ",";
+        command += albinoRabbit.getDestX() + ",";
+        command += albinoRabbit.getDestY() + ",";
         command += albinoRabbit.getLifeTime() - (model.gettTick() - albinoRabbit.getBirthTime()) + ");";
         return command;
     }
 
-    private void saveCrRabbits() {
+    public void saveCrRabbits() {
         try (Connection connection = DriverManager.getConnection(URL, username, password)) {
+            Class.forName("org.postgresql.Driver");
             Statement statement = connection.createStatement();
+            statement.executeUpdate(dropTableCommand);
+            statement.executeUpdate(createTableCommand);
             synchronized (model.getRabbitsVector()) {
                 for (Rabbit rabbit : model.getRabbitsVector()) {
                     if (rabbit instanceof CommonRabbit)
                         statement.executeUpdate(writeCrRabbit((CommonRabbit) rabbit));
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private void saveAlRabbits() {
+    public void saveAlRabbits() {
         try (Connection connection = DriverManager.getConnection(URL, username, password)) {
+            Class.forName("org.postgresql.Driver");
             Statement statement = connection.createStatement();
+            statement.executeUpdate(dropTableCommand);
+            statement.executeUpdate(createTableCommand);
             synchronized (model.getRabbitsVector()) {
                 for (Rabbit rabbit : model.getRabbitsVector()) {
                     if (rabbit instanceof AlbinoRabbit)
                         statement.executeUpdate(writeAlRabbit((AlbinoRabbit) rabbit));
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -135,7 +147,9 @@ public class DataBaseHandler {
         float spawn_x = resultSet.getFloat(5);
         float spawn_y = resultSet.getFloat(6);
         int birthTime = resultSet.getInt(7);
-        int lifetime = resultSet.getInt(8);
+        float dest_x = resultSet.getInt(8);
+        float dest_y = resultSet.getInt(9);
+        int lifetime = resultSet.getInt(10);
 
         CommonRabbit commonRabbit = new CommonRabbit();
         commonRabbit.spawn(posX, posY, root);
@@ -144,6 +158,8 @@ public class DataBaseHandler {
         commonRabbit.setID(id);
         commonRabbit.setBirthX(spawn_x);
         commonRabbit.setBirthY(spawn_y);
+        commonRabbit.setDestX(dest_x);
+        commonRabbit.setDestY(dest_y);
 
         return commonRabbit;
     }
@@ -155,7 +171,9 @@ public class DataBaseHandler {
         float spawn_x = resultSet.getFloat(5);
         float spawn_y = resultSet.getFloat(6);
         int birthTime = resultSet.getInt(7);
-        int lifetime = resultSet.getInt(8);
+        float dest_x = resultSet.getInt(8);
+        float dest_y = resultSet.getInt(9);
+        int lifetime = resultSet.getInt(10);
 
         AlbinoRabbit albinoRabbit = new AlbinoRabbit();
         albinoRabbit.spawn(posX, posY, root);
@@ -164,6 +182,8 @@ public class DataBaseHandler {
         albinoRabbit.setID(id);
         albinoRabbit.setBirthX(spawn_x);
         albinoRabbit.setBirthY(spawn_y);
+        albinoRabbit.setDestX(dest_x);
+        albinoRabbit.setDestY(dest_y);
         return albinoRabbit;
     }
 

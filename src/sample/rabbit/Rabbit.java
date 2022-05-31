@@ -109,6 +109,4 @@ public abstract class Rabbit extends Group implements IBehaviour, Serializable {
         lifeTime -= Model.getInstance().gettTick() - birthTime;
         oot.defaultWriteObject();
     }
-
-
 }

@@ -421,6 +421,7 @@ public class Controller {
 
         view.getLoadDBMenuItem().setOnAction(ActionEvent4 -> {
             dataBaseHandler.loadAll(view.getRoot());
+            pauseLogic();
         });
 
         view.getLoadMenuItem().setOnAction(ActionEvent3 -> {

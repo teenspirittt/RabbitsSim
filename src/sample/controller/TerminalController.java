@@ -58,6 +58,8 @@ public class TerminalController {
             case "/stopConnection\n" -> stopConnectionCommand();
             case "/get object\n" -> getObjectCommand();
             case "/get online\n" -> getClientsListCommand();
+            case "/w albino\n" -> saveAlbinoCommand();
+            case "/w common\n" -> saveCommonCommand();
             case "\n" -> endlCommand();
             default -> {
                 terminalView.getTerminalArea().appendText(" [-] Unknown command: " + text + "\n>>");
@@ -133,5 +135,18 @@ public class TerminalController {
         currentCursor = terminalView.getTerminalArea().getLength();
 
     }
+
+    void saveAlbinoCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        controller.dataBaseHandler.saveAlRabbits();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void saveCommonCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        controller.dataBaseHandler.saveCrRabbits();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
 
 }
