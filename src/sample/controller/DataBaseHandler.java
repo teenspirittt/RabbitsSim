@@ -7,7 +7,6 @@ import sample.rabbit.CommonRabbit;
 import sample.rabbit.Rabbit;
 
 
-import javax.swing.*;
 import java.sql.*;
 
 
@@ -34,7 +33,6 @@ public class DataBaseHandler {
     public void saveAll() {
 
         try (Connection connection = DriverManager.getConnection(URL, username, password)) {
-
             Class.forName("org.postgresql.Driver");
             Statement statement = connection.createStatement();
             statement.executeUpdate(dropTableCommand);
@@ -69,6 +67,7 @@ public class DataBaseHandler {
     }
 
     private String writeAlRabbit(AlbinoRabbit albinoRabbit) {
+        //to do preparement
         String command = "INSERT INTO " + tableName + " VALUES (";
         command += albinoRabbit.getID() + ",";
         command += "'Albino', ";
@@ -140,6 +139,42 @@ public class DataBaseHandler {
         }
     }
 
+    public void loadAlbino(Group root) {
+        try (Connection connection =  DriverManager.getConnection(URL, username, password)) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM rabbits WHERE type='Albino'");
+            synchronized (model.getRabbitsVector()) {
+                while(resultSet.next()) {
+                    Rabbit rabbit = readAlRabbit(resultSet, root);
+                    model.getRabbitsVector().add(rabbit);
+                    model.getRabbitsIdSet().add(rabbit.getID());
+                    model.getRabbitsLifeTimeMap().put(rabbit.getID(), model.gettTick());
+                    model.setAlCount(model.getAlCount() + 1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadCommon(Group root) {
+        try (Connection connection =  DriverManager.getConnection(URL, username, password)) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM rabbits WHERE type='Common'");
+            synchronized (model.getRabbitsVector()) {
+                while(resultSet.next()) {
+                    Rabbit rabbit = readCrRabbit(resultSet, root);
+                    model.getRabbitsVector().add(rabbit);
+                    model.getRabbitsIdSet().add(rabbit.getID());
+                    model.getRabbitsLifeTimeMap().put(rabbit.getID(), model.gettTick());
+                    model.setCrCount(model.getCrCount() + 1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Rabbit readCrRabbit(ResultSet resultSet, Group root) throws SQLException {
         int id = resultSet.getInt(1);
         float posX = resultSet.getFloat(3);
@@ -176,10 +211,10 @@ public class DataBaseHandler {
         int lifetime = resultSet.getInt(10);
 
         AlbinoRabbit albinoRabbit = new AlbinoRabbit();
+        albinoRabbit.setID(id);
         albinoRabbit.spawn(posX, posY, root);
         albinoRabbit.setBirthTime(birthTime);
         albinoRabbit.setLifeTime(lifetime);
-        albinoRabbit.setID(id);
         albinoRabbit.setBirthX(spawn_x);
         albinoRabbit.setBirthY(spawn_y);
         albinoRabbit.setDestX(dest_x);

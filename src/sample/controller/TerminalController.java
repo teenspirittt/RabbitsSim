@@ -1,14 +1,12 @@
 package sample.controller;
 
-import sample.model.Model;
+import sample.view.Habitat;
 import sample.view.TerminalView;
 
-import java.io.IOException;
 
 
 public class TerminalController {
     private int currentCursor = 2;
-    private int loginFlag = 0;
     private static TerminalController instance;
     TerminalView terminalView = TerminalView.getInstance();
     Controller controller = Controller.getInstance();
@@ -40,7 +38,7 @@ public class TerminalController {
         int percent = 0;
         String text = terminalView.getTerminalArea().getText();
         text = text.substring(currentCursor);
-        String numberOnly = text.replaceAll("[^0-9]", "");
+        String numberOnly = text.replaceAll("\\D", "");
 
         if (numberOnly.compareTo("") != 0) {
             percent = Integer.parseInt(numberOnly);
@@ -60,6 +58,8 @@ public class TerminalController {
             case "/get online\n" -> getClientsListCommand();
             case "/w albino\n" -> saveAlbinoCommand();
             case "/w common\n" -> saveCommonCommand();
+            case "/l common\n" -> loadCommonCommand();
+            case "/l albino\n" -> loadAlbinoCommand();
             case "\n" -> endlCommand();
             default -> {
                 terminalView.getTerminalArea().appendText(" [-] Unknown command: " + text + "\n>>");
@@ -100,7 +100,7 @@ public class TerminalController {
 
     void connectCommand() {
         terminalView.getTerminalArea().appendText(" Connection to 192.168.0.12...\n>>");
-        mainController.echoClient.startConnection("192.168.0.12", 8000);
+        mainController.echoClient.startConnection("localhost", 8000);
         currentCursor = terminalView.getTerminalArea().getLength();
     }
 
@@ -145,6 +145,18 @@ public class TerminalController {
     void saveCommonCommand() {
         terminalView.getTerminalArea().appendText(">>");
         controller.dataBaseHandler.saveCrRabbits();
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void loadCommonCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        controller.dataBaseHandler.loadCommon(Habitat.getInstance().getRoot());
+        currentCursor = terminalView.getTerminalArea().getLength();
+    }
+
+    void loadAlbinoCommand() {
+        terminalView.getTerminalArea().appendText(">>");
+        controller.dataBaseHandler.loadAlbino(Habitat.getInstance().getRoot());
         currentCursor = terminalView.getTerminalArea().getLength();
     }
 
